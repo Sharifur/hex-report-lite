@@ -4,6 +4,8 @@ namespace HexReport\App\Core;
 
 use HexReport\App\Core\Lib\SingleTon;
 
+use CodesVault\Howdyqb\DB;
+
 class AdminNoticeManager
 {
 	use SingleTon;

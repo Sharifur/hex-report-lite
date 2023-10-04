@@ -17,5 +17,22 @@ class CacheMigration
 			->column('email')->string(255)->default('NULL')
 			->index(['ID'])
 			->execute();
+
+		DB::create('visitor_log')
+			->column('ID')->bigInt()->unsigned()->autoIncrement()->primary()->required()
+			->column('January')->bigInt()->unsigned()->default(0)
+			->column('February')->bigInt()->unsigned()->default(0)
+			->column('March')->bigInt()->unsigned()->default(0)
+			->column('April')->bigInt()->unsigned()->default(0)
+			->column('May')->bigInt()->unsigned()->default(0)
+			->column('June')->bigInt()->unsigned()->default(0)
+			->column('July')->bigInt()->unsigned()->default(0)
+			->column('August')->bigInt()->unsigned()->default(0)
+			->column('September')->bigInt()->unsigned()->default(0)
+			->column('October')->bigInt()->unsigned()->default(0)
+			->column('November')->bigInt()->unsigned()->default(0)
+			->column('December')->bigInt()->unsigned()->default(0)
+			->index(['ID'])
+			->execute();
 	}
 }

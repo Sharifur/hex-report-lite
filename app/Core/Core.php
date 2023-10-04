@@ -2,6 +2,7 @@
 
 namespace HexReport\App\Core;
 
+
 use HexReport\App\Controllers\AdminMenuController;
 use HexReport\App\Controllers\AjaxApiController;
 use HexReport\App\Core\Lib\SingleTon;
@@ -26,7 +27,8 @@ final class Core extends BootManager
 			AdminMenuController::class,
 			AdminNoticeManager::class,
 			CouponCategory::class,
-			AjaxApiController::class
+			AjaxApiController::class,
+			DatabaseQuery::class,
 		];
 	}
 }

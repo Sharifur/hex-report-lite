@@ -22,6 +22,15 @@ export default function Dashboard(){
 		topSellingCatPrice: 0,
 	});
 
+	const [totalOrdersRation, setTotalOrdersRation] = useState({
+		cancelledOrderRation: 0,
+		refundedOrderRation: 0,
+		failedOrderRation: 0,
+	});
+
+	const [totalSalesOfYear , setTotalSalesOfYear] = useState([]);
+	const [totalVisitorsCount , setTotalVisitorsCount] = useState([]);
+
 	const {nonce,ajaxUrl,translate_array} = hexReportData;
 
 	useEffect(() => {
@@ -56,15 +65,90 @@ export default function Dashboard(){
 
 	}, []);
 
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'total_order_ratio',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTotalOrdersRation({
+						cancelledOrderRation : data.cancelledOrderRation,
+						refundedOrderRation : data.refundedOrderRation,
+						failedOrderRation : data.failedOrderRation,
+					})
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'total_sales_amount_for_year',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTotalSalesOfYear(data.totalSalesOfYear)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'total_visitors_count_for_year',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTotalVisitorsCount(data.totalVisitorsCount)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+
 	const {totalSales,totalCancelledAmount,totalOrdersAmount,totalRefundedAmount,topSellingProductName,topSellingProductPrice,topSellingCatName,topSellingCatPrice} = totalSalesAmount;
 
+	const {cancelledOrderRation,refundedOrderRation,failedOrderRation} = totalOrdersRation;
+
     const cardListItems = [
-        {title: "Marketing",amount: "(30.00%)"},
-        {title: "Returns",amount: "(30.00%)"},
-        {title: "Net Profit",amount: "(30.00%)"},
-        {title: "Taxes",amount: "(30.00%)"},
-        {title: "Transaction",amount: "(30.00%)"},
-        {title: "Experience",amount: "(30.00%)"},
+        {title: translate_array.cancelled,amount: "("+cancelledOrderRation.toFixed(2)+"%)"},
+        {title: translate_array.refunded,amount: "("+refundedOrderRation.toFixed(2)+"%)"},
+        {title: translate_array.failed,amount: "("+failedOrderRation.toFixed(2)+"%)"},
+        {title: translate_array.directBankTranser,amount: "(30.00%)"},
+        {title: translate_array.checkPayments,amount: "(30.00%)"},
+        {title: translate_array.cashOnDelivery,amount: "(30.00%)"},
     ];
 
     return (
@@ -72,15 +156,15 @@ export default function Dashboard(){
             <Container col={3}>
 				<DashBox title={translate_array.totalSales} text={totalSales} />
 				<DashBox title={translate_array.totalOrders} text={totalOrdersAmount}  />
-				<DashBox title={translate_array.totalCost} text={totalCancelledAmount} />
+				<DashBox title={translate_array.cancelledOrders} text={totalCancelledAmount} />
 				<DashBox title={`${translate_array.topSellingProduct} ${topSellingProductName}`} text={topSellingProductPrice} />
 
 				<DashBox title={`${translate_array.topSellingCatName} ${topSellingCatName}`} text={topSellingCatPrice}  />
 				<DashBox title={translate_array.refunded} text={totalRefundedAmount} />
             </Container>
             <Container col={2} extraClass={'margin-top-30'}>
-                <SalesChart title={translate_array.sales}/>
-                <SalesChart title={translate_array.visitors}/>
+                <SalesChart title={translate_array.sales} data={totalSalesOfYear}/>
+                <SalesChart title={translate_array.visitors} data={totalVisitorsCount}/>
             </Container>
             <Container col={2} extraClass={'margin-top-30'}>
                 <Card>

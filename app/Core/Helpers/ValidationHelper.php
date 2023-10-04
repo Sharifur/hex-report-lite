@@ -1,6 +1,6 @@
 <?php
 
-namespace hexcoupon\app\Core\Helpers;
+namespace HexReport\app\Core\Helpers;
 
 use HexReport\App\Core\Lib\SingleTon;
 
