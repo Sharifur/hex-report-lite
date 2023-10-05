@@ -133,6 +133,10 @@ class AssetsManager
 			'directBankTranser' => esc_html__( 'Direct bank transfer', 'hexreport' ),
 			'checkPayments' => esc_html__( 'Check payments', 'hexreport' ),
 			'cashOnDelivery' => esc_html__( 'Cash on delivery', 'hexreport' ),
+			'localPickup' => esc_html__( 'Local Pickup', 'hexreport' ),
+			'flatRate' => esc_html__( 'Flat Rate', 'hexreport' ),
+			'freeShipping' => esc_html__( 'Free Shipping', 'hexreport' ),
+			'percentOfRatio' => esc_html__( '% of Ratio', 'hexreport' ),
 		];
 
 		$hexreportSidebarAllText = [
@@ -166,6 +170,10 @@ class AssetsManager
 				'directBankTranser' => $hexreportDashboardAllText['directBankTranser'],
 				'checkPayments' => $hexreportDashboardAllText['checkPayments'],
 				'cashOnDelivery' => $hexreportDashboardAllText['cashOnDelivery'],
+				'localPickup' => $hexreportDashboardAllText['localPickup'],
+				'flatRate' => $hexreportDashboardAllText['flatRate'],
+				'freeShipping' => $hexreportDashboardAllText['freeShipping'],
+				'percentOfRatio' => $hexreportDashboardAllText['percentOfRatio'],
 
 				'janToApr' => $hexreportDashboardAllText['janToApr'],
 				'mayToAug' => $hexreportDashboardAllText['mayToAug'],

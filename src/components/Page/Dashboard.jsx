@@ -28,6 +28,12 @@ export default function Dashboard(){
 		failedOrderRation: 0,
 	});
 
+	const [paymentMethodsRatio, setPaymentMethodsRatio] = useState({
+		bankTransferRation: 0,
+		checkPaymentRatio: 0,
+		cashOnDeliveryRatio: 0,
+	});
+
 	const [totalSalesOfYear , setTotalSalesOfYear] = useState([]);
 	const [totalVisitorsCount , setTotalVisitorsCount] = useState([]);
 
@@ -82,6 +88,39 @@ export default function Dashboard(){
 						cancelledOrderRation : data.cancelledOrderRation,
 						refundedOrderRation : data.refundedOrderRation,
 						failedOrderRation : data.failedOrderRation,
+						localPickupRatio : data.localPickupRatio,
+						flatRateRatio : data.flatRateRatio,
+						freeShippingRatio : data.freeShippingRatio,
+					})
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'count_payment_method_ratio',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setPaymentMethodsRatio({
+						bankTransferRation : data.bankTransferRation,
+						checkPaymentRatio : data.checkPaymentRatio,
+						cashOnDeliveryRatio : data.cashOnDeliveryRatio,
+						localPickupRatio : data.localPickupRatio,
+						flatRateRatio : data.flatRateRatio,
+						freeShippingRatio : data.freeShippingRatio,
 					})
 				}
 				// Handle the response data
@@ -142,13 +181,15 @@ export default function Dashboard(){
 
 	const {cancelledOrderRation,refundedOrderRation,failedOrderRation} = totalOrdersRation;
 
+	const {bankTransferRation,checkPaymentRatio,cashOnDeliveryRatio,localPickupRatio,flatRateRatio,freeShippingRatio} = paymentMethodsRatio;
+
     const cardListItems = [
         {title: translate_array.cancelled,amount: "("+cancelledOrderRation.toFixed(2)+"%)"},
         {title: translate_array.refunded,amount: "("+refundedOrderRation.toFixed(2)+"%)"},
         {title: translate_array.failed,amount: "("+failedOrderRation.toFixed(2)+"%)"},
-        {title: translate_array.directBankTranser,amount: "(30.00%)"},
-        {title: translate_array.checkPayments,amount: "(30.00%)"},
-        {title: translate_array.cashOnDelivery,amount: "(30.00%)"},
+		{title: translate_array.directBankTranser,amount: "("+bankTransferRation.toFixed(2)+"%)"},
+		{title: translate_array.checkPayments,amount: "("+checkPaymentRatio.toFixed(2)+"%)"},
+		{title: translate_array.cashOnDelivery,amount: "("+cashOnDeliveryRatio.toFixed(2)+"%)"},
     ];
 
     return (
@@ -170,7 +211,7 @@ export default function Dashboard(){
                 <Card>
                     <div className="chartWithListWrapper">
                         <div className="donChart">
-                            <DoughnutChart/>
+                            <DoughnutChart localPickupRatio={localPickupRatio} flatRateRatio={flatRateRatio} freeShippingRatio={freeShippingRatio}/>
                         </div>
                         <div className="orderListWrapper">
                             <CardList lists={cardListItems}/>

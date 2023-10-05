@@ -5,63 +5,104 @@ use CodesVault\Howdyqb\DB;
 
 
 //
-//// Get all completed orders
-//$completed_orders = wc_get_orders(array(
-//	'status' => 'completed',
-//	'limit' => -1,
-//));
+//// Query completed orders
+//$args = array(
+//    'post_type' => 'shop_order',
+//    'posts_per_page' => -1,
+//    'post_status' => 'wc-completed', // Filter by completed orders
+//);
 //
-////echo '<pre>';
-////dd($completed_orders);
-////echo '</pre>';
+//$completed_orders = get_posts($args);
 //
-//// Initialize an array to store payment method counts
+//$total_order_count = count($completed_orders); // Total order count
+//
 //$payment_method_counts = array();
+//$shipping_method_counts = array();
 //
-//// Loop through completed orders
 //foreach ($completed_orders as $order) {
-//	if ($order->get_status('completed') ) {
-//		echo $order->get_status('refunded') . ' ';
-//		echo $payment_method = ! empty( $order->get_payment_method_title() ) ? $order->get_payment_method_title() : ''; // Use get_payment_method_title to get the payment method name
+//    // Get the payment method for each completed order
+//    $order_id = $order->ID;
+//    $order = wc_get_order($order_id);
+//    $payment_method = $order->get_payment_method();
 //
-//	}
-////	elseif( $order->get_status('completed') ) {
-////		echo $payment_method = $order->get_payment_method_title(); // Use get_payment_method_title to get the payment method name
-////	}
-//echo $order->get_status('refunded');
+//    // Get the shipping method for each completed order
+//    $shipping_method = $order->get_shipping_method();
 //
-////	// Check if the payment method exists in the array
-////	if (isset($payment_method_counts[$payment_method])) {
-////		// Increment the count
-////		$payment_method_counts[$payment_method]++;
-////	} else {
-////		// Initialize the count
-////		$payment_method_counts[$payment_method] = 1;
-////	}
+//    // Increment the count for payment method
+//    if (!empty($payment_method)) {
+//        if (!isset($payment_method_counts[$payment_method])) {
+//            $payment_method_counts[$payment_method] = 1;
+//        } else {
+//            $payment_method_counts[$payment_method]++;
+//        }
+//    }
+//
+//    // Increment the count for shipping method
+//    if (!empty($shipping_method)) {
+//        if (!isset($shipping_method_counts[$shipping_method])) {
+//			$shipping_method = strtolower($shipping_method);
+//			$shipping_method = str_replace(' ', '_', $shipping_method);
+//            $shipping_method_counts[$shipping_method] = 1;
+//        } else {
+//            $shipping_method_counts[$shipping_method]++;
+//        }
+//    }
 //}
-////
-////// Display the payment method counts
-////foreach ($payment_method_counts as $method => $count) {
-////	echo 'Payment Method: ' . $method . ' - Count: ' . $count . '<br>';
-////}
 //
+//var_dump($shipping_method_counts);
+
+
+
+//$args = array(
+//	'post_type' => 'shop_order',
+//	'posts_per_page' => -1,
+//	'post_status' => 'wc-completed', // Filter by completed orders
+//);
 //
-$query   = new WC_Order_Query( array(
-        'limit'      => 10,
-        'orderby'    => 'date',
-        'order'      => 'DESC',
-        'return'     => 'ids',
-    ) );
-    $orders  = $query->get_orders();
-
-    $completed_dates = array();
-    foreach ( $orders as $order_id ) {
-        $order                       = wc_get_order( $order_id );
-        $completed_dates[ $order_id ]    = $order->get_date_completed();
-    }
-    echo '<pre>$completed_dates:-';
-    print_r( $completed_dates );
-    echo '</pre>';
-
-
+//$completed_orders = get_posts( $args );
+//
+//$total_order_count = count( $completed_orders ); // Total order count
+//
+//$payment_method_counts = array();
+//$shipping_method_counts = array();
+//
+//foreach ( $completed_orders as $order ) {
+//	// Get the payment method for each completed order
+//	$order_id = $order->ID;
+//	$order = wc_get_order( $order_id );
+//	$payment_method = $order->get_payment_method();
+//
+//	// Get the shipping method for each completed order
+//	$shipping_method = $order->get_shipping_method();
+//
+//	// Increment the count for this payment method
+//	if ( !empty( $payment_method ) ) {
+//		if ( !isset( $payment_method_counts[$payment_method] ) ) {
+//			$payment_method_counts[$payment_method] = 1;
+//		} else {
+//			$payment_method_counts[$payment_method]++;
+//		}
+//	}
+//
+//	// Increment the count for shipping method
+//	if ( !empty($shipping_method) ) {
+//		if (!isset($shipping_method_counts[$shipping_method])) {
+//
+//			$shipping_method_counts[$shipping_method] = 1;
+//		} else {
+//			$shipping_method_counts[$shipping_method]++;
+//		}
+//	}
+//}
+//
+//$direct_bank_transfer_ration = $payment_method_counts['bacs'] / $total_order_count * 100;
+//$check_payment_ration = $payment_method_counts['cheque'] / $total_order_count * 100;
+//$cash_on_delivery_ration = $payment_method_counts['cod'] / $total_order_count * 100;
+//var_dump($shipping_method_counts);
+//echo '<br>';
+//var_dump($total_order_count);
+//echo '<br>';
+//echo $local_pickup_ratio = $shipping_method_counts['local_pickup'] / $total_order_count * 100;
+//echo $flat_rate_ratio = $shipping_method_counts['flat_rate'] / $total_order_count * 100;
+//echo $free_shipping_ratio = $shipping_method_counts['free_shipping'] / $total_order_count * 100;
 

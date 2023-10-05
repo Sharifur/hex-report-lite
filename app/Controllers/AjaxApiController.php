@@ -23,6 +23,7 @@ class AjaxApiController extends Controller
 		add_action( 'wp_ajax_total_visitors_count_for_year', [ $this, 'total_visitors_count_for_year' ] );
 		add_action( 'wp_ajax_total_completed_order_in_three_phases', [ $this, 'total_completed_order_in_three_phases' ] );
 		add_action( 'wp_ajax_total_order_ratio', [ $this, 'total_order_ratio' ] );
+		add_action( 'wp_ajax_count_payment_method_ratio', [ $this, 'count_payment_method_ratio' ] );
 	}
 
 	/**
@@ -381,6 +382,79 @@ class AjaxApiController extends Controller
 				'refundedOrderRation' => __( $refunded_order_ration ),
 				'failedOrderRation' => __( $failed_order_ration ),
 
+			], 200);
+		} else {
+			// Nonce verification failed, handle the error
+			wp_send_json( [
+				'error' => 'Nonce verification failed',
+			], 403); // 403 Forbidden status code
+		}
+	}
+
+	public function count_payment_method_ratio() {
+		// Query completed orders
+		$args = array(
+			'post_type' => 'shop_order',
+			'posts_per_page' => -1,
+			'post_status' => 'wc-completed', // Filter by completed orders
+		);
+
+		$completed_orders = get_posts( $args );
+
+		$total_order_count = count( $completed_orders ); // Total order count
+
+		$payment_method_counts = array();
+		$shipping_method_counts = array();
+
+		foreach ( $completed_orders as $order ) {
+			// Get the payment method for each completed order
+			$order_id = $order->ID;
+			$order = wc_get_order( $order_id );
+			$payment_method = $order->get_payment_method();
+
+			// Get the shipping method for each completed order
+			$shipping_method = $order->get_shipping_method();
+
+			// Increment the count for this payment method
+			if ( !empty( $payment_method ) ) {
+				if ( !isset( $payment_method_counts[$payment_method] ) ) {
+					$payment_method_counts[$payment_method] = 1;
+				} else {
+					$payment_method_counts[$payment_method]++;
+				}
+			}
+
+			// Increment the count for shipping method
+			if ( !empty( $shipping_method ) ) {
+				if (!isset( $shipping_method_counts[$shipping_method] )) {
+					$shipping_method_counts[$shipping_method] = 1;
+				} else {
+					$shipping_method_counts[$shipping_method]++;
+				}
+			}
+		}
+
+		$direct_bank_transfer_ration = $payment_method_counts['bacs'] / $total_order_count * 100;
+		$check_payment_ration = $payment_method_counts['cheque'] / $total_order_count * 100;
+		$cash_on_delivery_ration = $payment_method_counts['cod'] / $total_order_count * 100;
+
+		$local_pickup_ratio = $shipping_method_counts['Local pickup'] / $total_order_count * 100;
+		$flat_rate_ratio = $shipping_method_counts['Flat rate'] / $total_order_count * 100;
+		$free_shipping_ratio = $shipping_method_counts['Free shipping'] / $total_order_count * 100;
+
+		// Check the nonce and action
+		if ( $this->verify_nonce() ) {
+			// Nonce is valid, proceed with your code
+			wp_send_json( [
+				// Response data here
+				'msg' => __('hello'),
+				'type' => 'success',
+				'bankTransferRation' => __( $direct_bank_transfer_ration ),
+				'checkPaymentRatio' => __( $check_payment_ration ),
+				'cashOnDeliveryRatio' => __( $cash_on_delivery_ration ),
+				'localPickupRatio' => __( $local_pickup_ratio ),
+				'flatRateRatio' => __( $flat_rate_ratio ),
+				'freeShippingRatio' => __( $free_shipping_ratio ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
