@@ -1,4 +1,5 @@
 // import {th, tr} from "@faker-js/faker";
+import faker from "faker";
 import "../../../assets/scss/elements/table.scss";
 export default function Table({children=false,extraClass="default",info,pagination,padd}){
     const  style = padd !== null ? {padding: `${padd}px`} : {};

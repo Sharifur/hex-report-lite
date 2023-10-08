@@ -10,6 +10,7 @@ import Table from "../../components/Elements/Table/Table.jsx";
 import Thead from "../../components/Elements/Table/Thead.jsx";
 import Tbody from "../../components/Elements/Table/Tbody.jsx";
 // import {tr} from "@faker-js/faker";
+import faker from "faker";
 import SalesChart from "../../components/charts/SalesChart.jsx";
 
 

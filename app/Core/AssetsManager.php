@@ -94,7 +94,6 @@ class AssetsManager
 		wp_enqueue_script(
 			Hxc_prefix( 'main' ),
 			Hxc_url( "/dist/assets/index.js" ),
-
 			['jquery','wp-element'],
 			$this->version,
 			true
@@ -137,6 +136,9 @@ class AssetsManager
 			'flatRate' => esc_html__( 'Flat Rate', 'hexreport' ),
 			'freeShipping' => esc_html__( 'Free Shipping', 'hexreport' ),
 			'percentOfRatio' => esc_html__( '% of Ratio', 'hexreport' ),
+			'needHelpText' => esc_html__( 'Need a Help ?', 'hexreport' ),
+			'contactUsText' => esc_html__( 'Contact with Us', 'hexreport' ),
+			'contactUsLink' => esc_url( 'https://xgenious.com' ),
 		];
 
 		$hexreportSidebarAllText = [
@@ -174,6 +176,9 @@ class AssetsManager
 				'flatRate' => $hexreportDashboardAllText['flatRate'],
 				'freeShipping' => $hexreportDashboardAllText['freeShipping'],
 				'percentOfRatio' => $hexreportDashboardAllText['percentOfRatio'],
+				'needHelpText' => $hexreportDashboardAllText['needHelpText'],
+				'contactUsText' => $hexreportDashboardAllText['contactUsText'],
+				'contactUsLink' => $hexreportDashboardAllText['contactUsLink'],
 
 				'janToApr' => $hexreportDashboardAllText['janToApr'],
 				'mayToAug' => $hexreportDashboardAllText['mayToAug'],
@@ -189,16 +194,23 @@ class AssetsManager
 
 		//load css only on the plugin page
 
-		$screen = get_current_screen();
-		if ($screen->base === "toplevel_page_hexcoupon-page"){
-			wp_enqueue_style(
-				Hxc_prefix( 'main' ),
-				Hxc_url( "/dist/assets/index.css" ),
-				[],
-				$this->version,
-				"all"
-			);
-		}
+//		$screen = get_current_screen();
+//		if ($screen->base === "toplevel_page_hexreport-page"){
+//			wp_enqueue_style(
+//				Hxc_prefix( 'main' ),
+//				Hxc_url( "/dist/assets/index.css" ),
+//				[],
+//				$this->version,
+//				"all"
+//			);
+//		}
+		wp_enqueue_style(
+			Hxc_prefix( 'main-ff' ),
+			Hxc_url( "/dist/assets/index.css" ),
+			[],
+			$this->version,
+			"all"
+		);
 
 		 wp_set_script_translations( 'main', 'hexcoupon-lite', plugin_dir_path( __FILE__ ) . 'languages' );
 	}

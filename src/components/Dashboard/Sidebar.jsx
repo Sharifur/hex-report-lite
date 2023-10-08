@@ -3,7 +3,7 @@ import  logoIcon  from "../../assets/icons/logoIcon.svg";
 import  menuIcon  from "../../assets/icons/Menu.svg";
 import  DashboardIcon  from "../../assets/icons/dashboard.svg";
 import {useState} from "react";
-import {Link,useLocation} from "react-router-dom";
+import {Link, useLocation, useSearchParams} from "react-router-dom";
 import {useSidebar} from "../../context/SidebarContext.jsx";
 
 export default function Sidebar(){
@@ -14,6 +14,9 @@ export default function Sidebar(){
 
 	const {nonce,ajaxUrl,translate_array} = hexReportData;
 
+	const [searchParams, setSearchParams] = useSearchParams();
+	searchParams.set("page", "hexreport-page");
+	setSearchParams(searchParams);
 
     const handleMenuItemClick = (path) => {
         setActiveMenuItem(path);
@@ -37,11 +40,17 @@ export default function Sidebar(){
                         <span className="menuText">{translate_array.dashboard} </span>
                     </Link>
                 </li>
+				{/*<li className={`${activeMenuItem === '/account-settings?page=hexreport-page' ? 'active' : ''}`}>*/}
+				{/*	<Link to={'/account-settings'}>*/}
+				{/*		<img src={DashboardIcon} alt="dashboard icon"/>*/}
+				{/*		<span className="menuText">{'Account Settings'} </span>*/}
+				{/*	</Link>*/}
+				{/*</li>*/}
 				<li>
-					<Link to="/sales/by-channel" onClick={() => handleMenuItemClick('/sales/by-channel')} className={`${activeMenuItem === '/sales/by-channel' ? 'active' : ''}`}><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByChannel}</span></Link>
+					<Link to={`${windowParams}/sales/by-channel`} onClick={() => handleMenuItemClick('/sales/by-channel')} className={`${activeMenuItem === '/sales/by-channel' ? 'active' : ''}`}><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByChannel}</span></Link>
 				</li>
 				<li>
-					<Link to={`${windowParams}/sales/by-product`}
+					<Link to={"/sales/by-product"}
 						  onClick={() => handleMenuItemClick('/sales/by-product')} className={`${activeMenuItem === '/sales/by-product' ? 'active' : ''}`}
 					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByProducts}</span></Link>
 				</li>

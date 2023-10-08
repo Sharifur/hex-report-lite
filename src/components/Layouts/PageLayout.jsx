@@ -4,13 +4,14 @@ import HelpToastr from "../HelpToastr.jsx";
 import {SidebarProvider} from "../../context/SidebarContext.jsx";
 
 export default function PageLayout({children,pageTitle,helpToastr}){
+	const {nonce,ajaxUrl,translate_array} = hexReportData;
     return (
         <SidebarProvider>
             <div className="LayoutContainer">
                 <Sidebar />
                 <ContentArea pageTitle={pageTitle}>
                     {children}
-                    <HelpToastr text="Need a Help ?" anchorText="Contact with Us" link="https://xgenious.com"/>
+                    <HelpToastr text={translate_array.needHelpText} anchorText={translate_array.contactUsText} link="https://xgenious.com"/>
                 </ContentArea>
             </div>
         </SidebarProvider>

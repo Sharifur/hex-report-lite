@@ -13,6 +13,7 @@ export const SidebarProvider = ({children}) => {
     };
 
     const state = { isSidebarActive, toggleSidebar };
+
     return (
         <SidebarContext.Provider value={state}>
             {children}

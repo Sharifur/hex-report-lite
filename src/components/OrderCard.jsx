@@ -4,6 +4,7 @@ import CardHeader from "./Cards/CardHeader.jsx";
 import Card from "./Cards/Card.jsx";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import { __ } from "@wordpress/i18n";
 export default function OrderCard({title}){
 	const {nonce,ajaxUrl,translate_array} = hexReportData;
 
@@ -76,12 +77,20 @@ export default function OrderCard({title}){
 
 	let dailyAverageSale = totalOrdersAmount / 365;
 
+	const translatedText = {
+		totalOrders: __( "Total Orders", 'hexreport' ),
+		dailyAverage: __( "Daily Average", 'hexreport' ),
+		janToApr: __( "Jan-Apr", 'hexreport' ),
+		mayToAug: __( "May-Aug", 'hexreport' ),
+		sepToDec: __( "Sep-Dec", 'hexreport' ),
+	}
+
     const cardListItems = [
-        {title: translate_array.totalOrders,amount: "$"+totalOrdersAmount},
-        {title: translate_array.daylyAverage,amount: "$"+dailyAverageSale},
-        {title: translate_array.janToApr,amount: "$"+totalCompletedOredersFromJanToApr},
-        {title: translate_array.mayToAug,amount: "$"+totalCompletedOredersFromMayToAug},
-        {title: translate_array.sepToDec,amount: "$"+totalCompletedOredersFromSepToDec},
+        {title: translatedText.totalOrders,amount: "$"+totalOrdersAmount},
+        {title: translatedText.dailyAverage,amount: "$"+dailyAverageSale.toFixed(2)},
+        {title: translatedText.janToApr,amount: "$"+totalCompletedOredersFromJanToApr},
+        {title: translatedText.mayToAug,amount: "$"+totalCompletedOredersFromMayToAug},
+        {title: translatedText.sepToDec,amount: "$"+totalCompletedOredersFromSepToDec},
     ];
     return (
         <Card>

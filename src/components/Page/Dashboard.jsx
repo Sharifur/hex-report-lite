@@ -2,13 +2,14 @@ import Container from "../Layouts/Container.jsx";
 import DashBox from "../Elements/DashBox.jsx";
 import SalesChart from "../charts/SalesChart.jsx";
 import Card from "../Cards/Card.jsx";
-import {DoughnutChart} from "../charts/DoughnutChart.jsx";
+import DoughnutChart from "../charts/DoughnutChart.jsx";
 import CardList from "../Cards/CardList.jsx";
 import OrderCard from "../OrderCard.jsx";
 import PageHeader from "../Sections/PageHeader.jsx";
 import Select from "../Elements/Select.jsx";
 import axios from "axios";
 import React, {useEffect,useState} from 'react';
+import { __ } from "@wordpress/i18n";
 
 export default function Dashboard(){
 	const [totalSalesAmount, setTotalSalesAmount] = useState({
@@ -183,35 +184,69 @@ export default function Dashboard(){
 
 	const {bankTransferRation,checkPaymentRatio,cashOnDeliveryRatio,localPickupRatio,flatRateRatio,freeShippingRatio} = paymentMethodsRatio;
 
+	const translatedText =
+		{
+			cancelled: __("Cancelled", "hexreport"),
+			refunded: __("Refunded", "hexreport"),
+			failed: __("Failed", "hexreport"),
+			directBankTranser: __("Direct bank transfer", "hexreport"),
+			checkPayments: __("Check payments", "hexreport"),
+			cashOnDelivery: __("Cash on delivery", "hexreport"),
+			completedOrders: __("Completed Orders", "hexreport"),
+			totalOrders: __("Total Orders", "hexreport"),
+			cancelledOrders: __("Cancelled Orders", "hexreport"),
+			topSellingProduct: __("Top Selling Product:", "hexreport"),
+			topSellingCategory: __("Top Selling Category:", "hexreport"),
+			localPickup: __("Local Pickup", "hexreport"),
+			flatRate: __("Flat Rate", "hexreport"),
+			freeShipping: __("Free Shipping","hexreport"),
+			percentOfRatio: __( '% of Ratio', 'hexreport' ),
+			sales: __( 'Sales', 'hexreport' ),
+			visitors: __( 'Visitors', 'hexreport' ),
+		};
+
     const cardListItems = [
-        {title: translate_array.cancelled,amount: "("+cancelledOrderRation.toFixed(2)+"%)"},
-        {title: translate_array.refunded,amount: "("+refundedOrderRation.toFixed(2)+"%)"},
-        {title: translate_array.failed,amount: "("+failedOrderRation.toFixed(2)+"%)"},
-		{title: translate_array.directBankTranser,amount: "("+bankTransferRation.toFixed(2)+"%)"},
-		{title: translate_array.checkPayments,amount: "("+checkPaymentRatio.toFixed(2)+"%)"},
-		{title: translate_array.cashOnDelivery,amount: "("+cashOnDeliveryRatio.toFixed(2)+"%)"},
+        {title: translatedText.cancelled,amount: "("+cancelledOrderRation.toFixed(2)+"%)"},
+        {title: translatedText.refunded,amount: "("+refundedOrderRation.toFixed(2)+"%)"},
+        {title: translatedText.failed,amount: "("+failedOrderRation.toFixed(2)+"%)"},
+		{title: translatedText.directBankTranser,amount: "("+bankTransferRation.toFixed(2)+"%)"},
+		{title: translatedText.checkPayments,amount: "("+checkPaymentRatio.toFixed(2)+"%)"},
+		{title: translatedText.cashOnDelivery,amount: "("+cashOnDeliveryRatio.toFixed(2)+"%)"},
     ];
+
+	const doughnutDashboardData = {
+		labels: [translatedText.localPickup, translatedText.flatRate, translatedText.freeShipping],
+		datasets: [
+			{
+				label: translatedText.percentOfRatio,
+				data: [localPickupRatio, flatRateRatio, freeShippingRatio],
+				backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)'],
+				borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)'],
+				borderWidth: 1,
+			},
+		],
+	};
 
     return (
         <>
-            <Container col={3}>
-				<DashBox title={translate_array.totalSales} text={totalSales} />
-				<DashBox title={translate_array.totalOrders} text={totalOrdersAmount}  />
-				<DashBox title={translate_array.cancelledOrders} text={totalCancelledAmount} />
-				<DashBox title={`${translate_array.topSellingProduct} ${topSellingProductName}`} text={topSellingProductPrice} />
+			<Container col={3}>
+				<DashBox title={translatedText.completedOrders} text={totalSales} />
+				<DashBox title={translatedText.totalOrders} text={totalOrdersAmount}  />
+				<DashBox title={translatedText.cancelledOrders} text={totalCancelledAmount} />
+				<DashBox title={`${translatedText.topSellingProduct} ${topSellingProductName}`} text={topSellingProductPrice} />
 
-				<DashBox title={`${translate_array.topSellingCatName} ${topSellingCatName}`} text={topSellingCatPrice}  />
-				<DashBox title={translate_array.refunded} text={totalRefundedAmount} />
+				<DashBox title={`${translatedText.topSellingCategory} ${topSellingCatName}`} text={topSellingCatPrice}  />
+				<DashBox title={translatedText.refunded} text={totalRefundedAmount} />
             </Container>
             <Container col={2} extraClass={'margin-top-30'}>
-                <SalesChart title={translate_array.sales} data={totalSalesOfYear}/>
-                <SalesChart title={translate_array.visitors} data={totalVisitorsCount}/>
+                <SalesChart title={translatedText.sales} data={totalSalesOfYear}/>
+                <SalesChart title={translatedText.visitors} data={totalVisitorsCount}/>
             </Container>
             <Container col={2} extraClass={'margin-top-30'}>
                 <Card>
                     <div className="chartWithListWrapper">
                         <div className="donChart">
-                            <DoughnutChart localPickupRatio={localPickupRatio} flatRateRatio={flatRateRatio} freeShippingRatio={freeShippingRatio}/>
+                            <DoughnutChart labels={doughnutDashboardData.labels} datasets={doughnutDashboardData.datasets}/>
                         </div>
                         <div className="orderListWrapper">
                             <CardList lists={cardListItems}/>
