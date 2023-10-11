@@ -12,7 +12,7 @@ class DeactivationService
 	{
 		// deactivation event handler
 		\register_deactivation_hook(
-			HXC_FILE,
+			HEXREPORT_FILE,
 			[ __CLASS__, 'deactivate' ]
 		);
 	}
@@ -21,7 +21,7 @@ class DeactivationService
 	{
 		?>
 		<div class="notice notice-error is-dismissible">
-			<p><?php echo esc_html__( 'Plugin is deactivated', 'hexreport'); ?></p>
+			<p><?php echo esc_html__(  'Plugin is deactivated', 'hexreport' ); ?></p>
 		</div>
 		<?php
 	}

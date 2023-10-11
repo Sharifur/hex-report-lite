@@ -3,8 +3,6 @@
 namespace HexReport\App\Controllers;
 
 use HexReport\App\Core\Lib\SingleTon;
-use Kathamo\Framework\Lib\Http\Request;
-use function Symfony\Component\VarDumper\Dumper\esc;
 
 class AdminMenuController extends BaseController
 {

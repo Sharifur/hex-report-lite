@@ -1,19 +1,17 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  * Configurations for the plugin
  *
- * @package hexcoupon
+ * @package hexreport
  */
-return array(
-	'plugin_prefix'		=> 'Hxc',
-	'plugin_slug'		=> 'Hxc',
+return [
+	'plugin_prefix' 	=> 'hexreport',
+	'plugin_slug'		=> 'hexreport',
 	'namaspace_root'	=> 'HexReport',
 	'plugin_version'	=> '1.0.0',
 	'plugin_name'		=> 'HexReport',
 	'dev_mode'			=> true,
-	'root_dir'			=> dirname(__DIR__),
-	'middlewares'		=> [
-		'auth'	=> HexReport\App\Controllers\Middleware\Auth::class,
-	],
-);
+	'root_dir'			=> dirname( __DIR__ ),
+];

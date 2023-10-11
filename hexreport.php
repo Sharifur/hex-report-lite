@@ -4,7 +4,7 @@
  *
  * Plugin Name: HexReport
  * Plugin URI: https://wordpress.org/plugins/hexreport
- * Description: Extend coupon functionality in your Woocommerce store.
+ * Description: Get extensive report of WooCommerce store.
  * Version: 1.0.0
  * Author: WpHex
  * Requires at least: 5.4
@@ -23,12 +23,12 @@ use HexReport\App\Core\Core;
 
 if ( ! defined( 'ABSPATH' ) ) die();
 
-define( 'HXC_FILE', __FILE__ );
+define( 'HEXREPORT_FILE', __FILE__ );
 
 require_once __DIR__ . '/configs/bootstrap.php';
 
-if ( file_exists( HXC_DIR_PATH . '/vendor/autoload.php' ) ) {
-	require_once HXC_DIR_PATH . '/vendor/autoload.php';
+if ( file_exists( HEXREPORT_DIR_PATH . '/vendor/autoload.php' ) ) {
+	require_once HEXREPORT_DIR_PATH . '/vendor/autoload.php';
 }
 
 Core::getInstance();

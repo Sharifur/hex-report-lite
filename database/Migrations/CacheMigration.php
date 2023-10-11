@@ -11,15 +11,10 @@ class CacheMigration
 
 	public function __construct()
 	{
-		DB::create('hexreport')
-			->column('ID')->bigInt()->unsigned()->autoIncrement()->primary()->required()
-			->column('name')->string(255)->required()
-			->column('email')->string(255)->default('NULL')
-			->index(['ID'])
-			->execute();
+		$current_year = date( 'Y' );
 
-		DB::create('visitor_log')
-			->column('ID')->bigInt()->unsigned()->autoIncrement()->primary()->required()
+		DB::create('hexreport_visitor_log')
+			->column('Year')->bigInt()->unsigned()->primary()->required()->default($current_year)
 			->column('January')->bigInt()->unsigned()->default(0)
 			->column('February')->bigInt()->unsigned()->default(0)
 			->column('March')->bigInt()->unsigned()->default(0)
@@ -32,7 +27,7 @@ class CacheMigration
 			->column('October')->bigInt()->unsigned()->default(0)
 			->column('November')->bigInt()->unsigned()->default(0)
 			->column('December')->bigInt()->unsigned()->default(0)
-			->index(['ID'])
+			->index(['Year'])
 			->execute();
 	}
 }

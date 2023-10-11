@@ -19,9 +19,36 @@ class DatabaseQuery
 	 */
 	public function register()
 	{
+		add_action( 'init', [ $this, 'update_year_column_value' ] );
 		add_action( 'wp', [ $this, 'log_visitor_arrival_data' ] );
 	}
 
+	/**
+	 * @package hexreport
+	 * @author WpHex
+	 * @since 1.0.0
+	 * @method update_year_column_value
+	 * @return void
+	 * Update 'Year' column database value if it does not match with current year
+	 */
+	public function update_year_column_value()
+	{
+		$current_year = date( 'Y' );
+
+		$result2 =
+			DB::select( 'hexreport_visitor_log.' . 'Year' )
+				->distinct()
+				->from( 'hexreport_visitor_log hexreport_visitor_log' )
+				->get();
+
+		if ( $current_year != $result2[0]['Year'] ) {
+			DB::update('hexreport_visitor_log', [
+				'Year' => $current_year,
+			] )
+				->where('Year', '!=', $current_year)
+				->execute();
+		}
+	}
 
 	/**
 	 * @package hexreport
@@ -31,13 +58,15 @@ class DatabaseQuery
 	 * @return void
 	 * Get the total number of counts of user visits of the website
 	 */
-	public function log_visitor_arrival_data() {
-		$current_month = date('F');
+	public function log_visitor_arrival_data()
+	{
+		$current_year = date( 'Y' );
+		$current_month = date( 'F' );
 
 		$result =
-			DB::select('visitor_log.'.$current_month)
+			DB::select( 'hexreport_visitor_log.' . $current_month )
 				->distinct()
-				->from('visitor_log visitor_log')
+				->from( 'hexreport_visitor_log hexreport_visitor_log' )
 				->get();
 
 		$current_count = ! empty( $result[0][$current_month] ) ? $result[0][$current_month] : 0;
@@ -45,25 +74,24 @@ class DatabaseQuery
 		if ( is_user_logged_in() ) {
 			return;
 		} else {
-			if ( $current_count === 0 ) {
+			if ( 0 === $current_count ) {
 				// Initialize the count if it doesn't exist
 				$current_count = 1;
-				DB::insert('visitor_log', [
+				DB::insert('hexreport_visitor_log', [
 					[
 						$current_month => $current_count,
 					]
-				]);
+				] );
 			} else {
 				// Increment the count
 				$current_count++;
-				DB::update('visitor_log', [
+
+				DB::update('hexreport_visitor_log', [
 					$current_month => $current_count,
 				] )
-					->where('ID', '=', 1)
+					->where('Year', '=', $current_year)
 					->execute();
 			}
 		}
 	}
-
-
 }

@@ -20,18 +20,7 @@ export default function App() {
 				<MainLayoutContainer>
 					<Routes>
 						{/*<Route element={<Dashboard/>} path="/"/>*/}
-						{/*<Route element={<AccountSettings />} path="/account-settings"/>*/}
-						{/*<Route element={<Sales />} path="/sales/by-channel"/>*/}
 						<Route element={<ByProduct />} path="/sales/by-product"/>
-						{/*<Route element={<StoreCredit/>} path="/store-credit"/>*/}
-						{/*<Route element={<Coupon/>} path="/coupon"/>*/}
-						{/*/!* <Route element={<LoyaltyProgramme /> } path="/loyalty-programme" /> *!/*/}
-						{/*/!* <Route element={<GiftCards /> } path="/gift-cards" /> *!/*/}
-						{/*/!* <Route element={<Automations /> } path="/automations" /> *!/*/}
-
-						{/*/!* hex coupon inner link  *!/*/}
-						{/*<Route element={<GrantCoupon/>} path="/grant-coupon"/>*/}
-						{/*<Route element={<CouponSettings/>} path="/coupon-settings"/>*/}
 					</Routes>
 				</MainLayoutContainer>
 			</div>

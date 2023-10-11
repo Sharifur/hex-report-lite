@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; // exit if access directly ?>
 <div id="vite-react-sample"></div>
 
 <?php
@@ -1138,4 +1139,166 @@ use CodesVault\Howdyqb\DB;
 //array_splice($monthly_top_selling_product, -3);
 //
 //print_r($monthly_top_selling_product);
+
+//$secondTopProductName = '';
+//if (class_exists('WooCommerce')) {
+//	// Get the current date
+//	$current_date = current_time('Y-m-d');
+//
+//	// Calculate the date 12 months ago from the current date
+//	$twelve_months_ago = date('Y-m-d', strtotime('-12 months', strtotime($current_date)));
+//
+//	// Create an array to store monthly top-selling product data for the current year
+//	$monthly_top_selling_product = array();
+//
+//	// Loop through each month within the last 12 months
+//	$current_month = strtotime($current_date);
+//	$start_date = strtotime($twelve_months_ago);
+//
+//	// Initialize an array for all months in the year
+//	$all_months = array(
+//		'January', 'February', 'March', 'April', 'May', 'June',
+//		'July', 'August', 'September', 'October', 'November', 'December'
+//	);
+//
+//	// Iterate over all months and initialize them with 0 sales for the top product
+//	foreach ($all_months as $month_name) {
+//		$formatted_month = $month_name . ' ' . date('Y', $current_month);
+//		$monthly_top_selling_product[$formatted_month] = 0;
+//	}
+//	while ($current_month >= $start_date) {
+//		$month_start_date = date('Y-m-01', $current_month);
+//		$month_end_date = date('Y-m-t', $current_month);
+//
+//		// Get all completed orders for the current month
+//		$args = array(
+//			'post_type' => 'shop_order',
+//			'post_status' => 'wc-completed',
+//			'date_query' => array(
+//				'after' => $month_start_date,
+//				'before' => $month_end_date,
+//			),
+//			'posts_per_page' => -1,
+//		);
+//
+//		$orders = get_posts($args);
+//
+//		// Create an array to store product sales counts for the current month
+//		$monthly_product_sales = array();
+//
+//		foreach ($orders as $order) {
+//			// Get order items
+//			$order_items = wc_get_order($order->ID)->get_items();
+//
+//			var_dump(wc_get_order($order->ID)->get_product_name());
+//
+//			foreach ($order_items as $item) {
+//				// Get product ID and quantity sold
+//				$product_id = $item->get_product_id();
+//				$quantity_sold = $item->get_quantity();
+//
+//				// Increment the product's sales count in the array
+//				if (isset($monthly_product_sales[$product_id])) {
+//					$monthly_product_sales[$product_id] += $quantity_sold;
+//				} else {
+//					$monthly_product_sales[$product_id] = $quantity_sold;
+//				}
+//			}
+//		}
+//
+//		// Sort products by sales count in descending order for the current month
+//		arsort($monthly_product_sales);
+//
+//		// Get the top selling products for the current month (only the first two)
+//		$top_selling_products = array_slice($monthly_product_sales, 0, 2);
+//
+//		// Store monthly data in the array
+//		$formatted_month = date('F Y', $current_month);
+//
+//		if (count($top_selling_products) >= 2) {
+//			$monthly_top_selling_product[$formatted_month] = $top_selling_products[1]; // Get the second element
+//
+//			$secondTopProductID = $top_selling_products[1]; // Get the product ID of the second element
+//			var_dump(get_the_ID($secondTopProductID));
+//			$secondTopProduct = wc_get_product($secondTopProductID);
+//			var_dump($secondTopProductID);
+//			var_dump($secondTopProduct);
+//			if ($secondTopProduct) {
+//				$secondTopProductName = $secondTopProduct->get_name(); // Get the name of the second top-selling product
+//				echo $secondTopProductName;
+//			}
+//		} else {
+//			// Handle the case where there are not enough products to determine a second top-selling product
+//			$monthly_top_selling_product[$formatted_month] = 0; // Or set a default value
+//		}
+//
+//
+//
+//		// Move to the previous month
+//		$current_month = strtotime('-1 month', $current_month);
+//	}
+//}
+//array_splice($monthly_top_selling_product, -3);
+//
+//$final_data = [];
+//
+//foreach ( $monthly_top_selling_product as $value ) {
+//	$final_data[] = $value;
+//}
+//
+//echo '<pre>';
+//print_r($final_data);
+//echo'</pre>';
+//
+//
+//
+////
+////$secondTopProduct = wc_get_product( $secondTopProductID );
+////$secondTopProductName = $secondTopProduct->get_name();
+//
+//echo 'Second Top-Selling Product Name: ' . $secondTopProductName; // Output the name of the second top-selling product
+
+
+
+if (class_exists('WooCommerce')) {
+	$firstTopProductName  = '';
+	$secondTopProductName = '';
+
+	// Query to get the top-selling products
+	$args = array(
+		'post_type' => 'product',
+		'posts_per_page' => 2,
+		'orderby' => 'meta_value_num',
+		'meta_key' => 'total_sales',
+		'order' => 'DESC',
+	);
+
+	$topProducts = new WP_Query($args);
+	$arr = [];
+	while( $topProducts->have_posts() ) {
+		$topProducts->the_post();
+		$arr[] = get_the_title();
+	}
+
+	if ($topProducts->have_posts()) {
+		$topProducts->the_post();
+
+		// Get the name of the first best-selling product
+		$firstTopProductName = get_the_title();
+
+		// Skip the first product to get the second best-selling product
+		$topProducts->the_post();
+
+		// Get the name of the second best-selling product
+		$secondTopProductName = get_the_title();
+
+		wp_reset_postdata();
+	}
+}
+//echo 'first best selling product name: ' . $firstTopProductName . '<br>';
+//echo "Second Best Selling Product Name: " . $secondTopProductName;
+
+	echo $arr[0];
+echo '<br>';
+echo $arr[1];
 

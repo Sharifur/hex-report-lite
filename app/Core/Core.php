@@ -6,7 +6,6 @@ namespace HexReport\App\Core;
 use HexReport\App\Controllers\AdminMenuController;
 use HexReport\App\Controllers\AjaxApiController;
 use HexReport\App\Core\Lib\SingleTon;
-use HexReport\App\Core\WooCommerce\CouponCategory;
 use HexReport\App\Services\ActivationService;
 use HexReport\App\Services\DeactivationService;
 use Kathamo\Framework\Lib\BootManager;
@@ -26,7 +25,6 @@ final class Core extends BootManager
 			AssetsManager::class,
 			AdminMenuController::class,
 			AdminNoticeManager::class,
-			CouponCategory::class,
 			AjaxApiController::class,
 			DatabaseQuery::class,
 		];

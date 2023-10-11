@@ -1,10 +1,10 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-define( 'HXC_DIR_PATH', plugin_dir_path( HXC_FILE ) );
-define( 'HXC_PLUGIN_URL', plugins_url( '/', HXC_FILE ) );
+define( 'HEXREPORT_DIR_PATH', plugin_dir_path( HEXREPORT_FILE ) );
+define( 'HEXREPORT_PLUGIN_URL', plugins_url( '/', HEXREPORT_FILE ) );
 
-
-if ( ! function_exists( 'Hxc_get_config' ) ) {
+if ( ! function_exists( 'hexreport_get_config' ) ) {
 	/**
 	 * get configs.
 	 *
@@ -12,9 +12,9 @@ if ( ! function_exists( 'Hxc_get_config' ) ) {
 	 *
 	 * @return string
 	 */
-	function Hxc_get_config($name = '')
+	function hexreport_get_config($name = '')
 	{
-		$configs = require HXC_DIR_PATH . '/configs/config.php';
+		$configs = require HEXREPORT_DIR_PATH . '/configs/config.php';
 		if ( $name ) {
 			return isset($configs[$name]) ? $configs[$name] : false;
 		}
@@ -22,7 +22,7 @@ if ( ! function_exists( 'Hxc_get_config' ) ) {
 	}
 }
 
-if ( ! function_exists( 'Hxc_prefix' ) ) {
+if ( ! function_exists( 'hexreport_prefix' ) ) {
 	/**
 	 * Add prefix for the given string.
 	 *
@@ -30,13 +30,13 @@ if ( ! function_exists( 'Hxc_prefix' ) ) {
 	 *
 	 * @return string
 	 */
-	function Hxc_prefix($name)
+	function hexreport_prefix($name)
 	{
-		return Hxc_get_config('plugin_slug') . "-" . $name;
+		return hexreport_get_config('plugin_slug') . "-" . $name;
 	}
 }
 
-if ( ! function_exists( 'Hxc_url' ) ) {
+if ( ! function_exists( 'hexreport_url' ) ) {
 	/**
 	 * Add prefix for the given string.
 	 *
@@ -44,13 +44,13 @@ if ( ! function_exists( 'Hxc_url' ) ) {
 	 *
 	 * @return string
 	 */
-	function Hxc_url($path)
+	function hexreport_url($path)
 	{
-		return HXC_PLUGIN_URL . $path;
+		return HEXREPORT_PLUGIN_URL . $path;
 	}
 }
 
-if ( ! function_exists( 'Hxc_asset_url' ) ) {
+if ( ! function_exists( 'hexreport_asset_url' ) ) {
 	/**
 	 * Add prefix for the given string.
 	 *
@@ -58,13 +58,13 @@ if ( ! function_exists( 'Hxc_asset_url' ) ) {
 	 *
 	 * @return string
 	 */
-	function Hxc_asset_url($path)
+	function hexreport_asset_url($path)
 	{
-		return Hxc_url( "assets" . $path );
+		return hexreport_url( "assets" . $path );
 	}
 }
 
-if ( ! function_exists( 'Hxc_wp_ajax' ) ) {
+if ( ! function_exists( 'hexreport_wp_ajax' ) ) {
 	/**
 	 * Wrapper function for wp_ajax_* and wp_ajax_nopriv_*
 	 *
@@ -74,7 +74,7 @@ if ( ! function_exists( 'Hxc_wp_ajax' ) ) {
 	 *
 	 * @return mixed
 	 */
-	function Hxc_wp_ajax($action, $callback, $public = false)
+	function hexreport_wp_ajax($action, $callback, $public = false)
 	{
 		add_action( 'wp_ajax_' . $action, $callback );
 		if ( $public ) {
@@ -83,7 +83,7 @@ if ( ! function_exists( 'Hxc_wp_ajax' ) ) {
 	}
 }
 
-if ( ! function_exists( 'Hxc_render_template' ) ) {
+if ( ! function_exists( 'hexreport_render_template' ) ) {
 	/**
 	 * Require a Template file.
 	 *
@@ -95,22 +95,22 @@ if ( ! function_exists( 'Hxc_render_template' ) ) {
 	 * @throws \Exception - if file not found throw exception
 	 * @throws \Exception - if data is not array throw exception
 	 */
-	function Hxc_render_template($file_path, $data = array())
+	function hexreport_render_template($file_path, $data = array())
 	{
-		$file = HXC_DIR_PATH . "app" . $file_path;
+		$file = HEXREPORT_DIR_PATH . "app" . $file_path;
 		if ( ! file_exists( $file ) ) {
-			throw new \Exception( "File not found" );
+			throw new \Exception( esc_html__( "File not found", 'hexreport' ) );
 		}
 		if ( ! is_array( $data ) ) {
-			throw new \Exception( "Expected array as data" );
+			throw new \Exception( esc_html__( "Expected array as data", 'hexreport' ) );
 		}
-		extract( $data, EXTR_PREFIX_SAME, Hxc_get_config('plugin_prefix') );	// @phpcs:ignore
+		extract( $data, EXTR_PREFIX_SAME, hexreport_get_config('plugin_prefix') );	// @phpcs:ignore
 
 		return require_once $file;
 	}
 }
 
-if ( ! function_exists( 'Hxc_render_view_template' ) ) {
+if ( ! function_exists( 'hexreport_render_view_template' ) ) {
 	/**
 	 * Require a View template file.
 	 *
@@ -119,8 +119,8 @@ if ( ! function_exists( 'Hxc_render_view_template' ) ) {
 	 *
 	 * @return mixed
 	 */
-	function Hxc_render_view_template($file_path, $data = array())
+	function hexreport_render_view_template($file_path, $data = array())
 	{
-		return Hxc_render_template( "/Views" . $file_path, $data );
+		return hexreport_render_template( "/Views" . $file_path, $data );
 	}
 }

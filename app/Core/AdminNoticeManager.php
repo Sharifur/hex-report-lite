@@ -122,19 +122,28 @@ class AdminNoticeManager
 	 */
 	public function show_active_and_installation_notice_for_woocommerce()
 	{
-		$plugin_file = 'woocommerce/woocommerce.php';
-		$plugin_path = WP_PLUGIN_DIR . '/' . $plugin_file;
-		if ( ! class_exists( 'WooCommerce' ) && ! file_exists( $plugin_path ) ) {
+		$installation_message = $this->get_woocommerce_install_notice_message();
+		$activation_message = $this->get_woocommerce_active_notice_message();
+
+		$allowed_html_tags = [
+			'a' => [
+				'href' => [],
+			]
+		];
+
+		$all_plugins_list = get_plugins();
+
+		if (  ! array_key_exists( 'woocommerce/woocommerce.php', $all_plugins_list ) ) {
 			?>
 			<div class="notice notice-error is-dismissible">
-				<p><?php printf( esc_html__( '%s', 'hexreport' ), $this->get_woocommerce_install_notice_message() ); ?></p>
+				<p><?php echo wp_kses( $installation_message, $allowed_html_tags ); ?></p>
 			</div>
 			<?php
 		}
-		else if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		else if ( ! class_exists( 'WooCommerce' ) ) {
 			?>
 			<div class="notice notice-error is-dismissible">
-				<p><?php printf( esc_html__( '%s', 'hexreport' ), $this->get_woocommerce_active_notice_message() ); ?></p>
+				<p><?php echo wp_kses( $activation_message, $allowed_html_tags ); ?></p>
 			</div>
 			<?php
 		}
@@ -178,7 +187,12 @@ class AdminNoticeManager
 	 * */
 	private function get_wordpress_version_message()
 	{
-		return esc_html__( 'This plugin requires at least WordPress version of ' . $this->get_plugin_wp_version(), 'hexreport' );
+		$wp_version = $this->get_plugin_wp_version();
+
+		return sprintf(
+			esc_html__( 'This plugin requires at least WordPress version of %s', 'hexreport' ),
+			esc_html( $wp_version )
+		);
 	}
 
 	/**
@@ -191,7 +205,12 @@ class AdminNoticeManager
 	 * */
 	private function get_woocommerce_version_message()
 	{
-		return esc_html__( 'This plugin requires at least WooCommerce version of ' . $this->get_plugin_wc_version(), 'hexreport' );
+		$wc_version = $this->get_plugin_wc_version();
+
+		return sprintf(
+			esc_html__( 'This plugin requires at least WooCommerce version of %s', 'hexreport' ),
+			esc_html( $wc_version )
+		);
 	}
 
 	/**
@@ -204,7 +223,12 @@ class AdminNoticeManager
 	 * */
 	private function get_php_version_message()
 	{
-		return esc_html__( 'This plugin requires at least PHP version of ' . $this->get_plugin_php_version(), 'hexreport' );
+		$php_version = $this->get_plugin_php_version();
+
+		return sprintf(
+			esc_html__( 'This plugin requires at least PHP version of %s', 'hexreport' ),
+			esc_html( $php_version )
+		);
 	}
 
 	/**
@@ -226,7 +250,7 @@ class AdminNoticeManager
 		?>
 		<div class="notice notice-info is-dismissible">
 			<p>
-				<?php printf( esc_html__( '%s', 'hexreport' ), $wp_version_notice_message ); ?>
+				<?php printf( esc_html__( '%s', 'hexreport' ), esc_html( $wp_version_notice_message ) ); ?>
 			</p>
 		</div>
 		<?php
@@ -244,14 +268,14 @@ class AdminNoticeManager
 	{
 		$plugin_wc_version = $this->get_plugin_wc_version();
 
-		if ( class_exists( 'WooCommerce' ) && version_compare( WC_VERSION, $plugin_wc_version, '<' ) ) {
+		if ( defined('WC_VERSION') && class_exists( 'WooCommerce' ) && version_compare( WC_VERSION, $plugin_wc_version, '<' ) ) {
 			$wc_version_notice_message = $this->get_woocommerce_version_message();
 		}
 		if ( ! empty( $wc_version_notice_message ) ) {
 			?>
 			<div class="notice notice-info is-dismissible">
 				<p>
-					<?php printf( esc_html__( '%s', 'hexreport' ), $wc_version_notice_message ); ?>
+					<?php printf( esc_html__( '%s', 'hexreport' ), esc_html( $wc_version_notice_message ) ); ?>
 				</p>
 			</div>
 			<?php
@@ -277,7 +301,7 @@ class AdminNoticeManager
 		?>
 		<div class="notice notice-info is-dismissible">
 			<p>
-				<?php printf( esc_html__( '%s', 'hexreport' ), $php_version_notice_message ); ?>
+				<?php printf( esc_html__( '%s', 'hexreport' ), esc_html( $php_version_notice_message ) ); ?>
 			</p>
 		</div>
 		<?php

@@ -5,6 +5,7 @@ import  DashboardIcon  from "../../assets/icons/dashboard.svg";
 import {useState} from "react";
 import {Link, useLocation, useSearchParams} from "react-router-dom";
 import {useSidebar} from "../../context/SidebarContext.jsx";
+import { __ } from "@wordpress/i18n";
 
 export default function Sidebar(){
     const [activeMenuItem, setActiveMenuItem] = useState(location.pathname);
@@ -37,32 +38,23 @@ export default function Sidebar(){
                 <li className={`${activeMenuItem === '/' ? 'active' : ''}`}>
                     <Link to={windowParams}>
                         <img src={DashboardIcon} alt="dashboard icon"/>
-                        <span className="menuText">{translate_array.dashboard} </span>
+                        <span className="menuText">{__("Dashboard","hexreport")} </span>
                     </Link>
                 </li>
-				{/*<li className={`${activeMenuItem === '/account-settings?page=hexreport-page' ? 'active' : ''}`}>*/}
-				{/*	<Link to={'/account-settings'}>*/}
-				{/*		<img src={DashboardIcon} alt="dashboard icon"/>*/}
-				{/*		<span className="menuText">{'Account Settings'} </span>*/}
-				{/*	</Link>*/}
-				{/*</li>*/}
-				<li>
-					<Link to={`${windowParams}/sales/by-channel`} onClick={() => handleMenuItemClick('/sales/by-channel')} className={`${activeMenuItem === '/sales/by-channel' ? 'active' : ''}`}><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByChannel}</span></Link>
-				</li>
 				<li>
 					<Link to={"/sales/by-product"}
 						  onClick={() => handleMenuItemClick('/sales/by-product')} className={`${activeMenuItem === '/sales/by-product' ? 'active' : ''}`}
-					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByProducts}</span></Link>
+					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></Link>
 				</li>
 				<li>
 					<Link to="/sales/by-product-type"
 						  onClick={() => handleMenuItemClick('/sales/by-product-type')} className={`${activeMenuItem === '/sales/by-product-type' ? 'active' : ''}`}
-					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByProductsTypes}</span></Link>
+					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__("Sales by Categories","hexreport")}</span></Link>
 				</li>
 				<li>
 					<Link to="/sales/by-locations"
 						  onClick={() => handleMenuItemClick('/sales/by-locations')} className={`${activeMenuItem === '/sales/by-locations' ? 'active' : ''}`}
-					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{translate_array.salesByLocations}</span></Link>
+					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__("Sales by Locations","hexreport")}</span></Link>
 				</li>
 
             </ul>

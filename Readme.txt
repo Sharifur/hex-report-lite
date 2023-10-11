@@ -1,7 +1,7 @@
-=== HexReport - The ultimate plugin for showing Woocommerce details report ===
-Contributors: palashwpdev
+=== HexReport ===
+Contributors: wphex
 Donate link: https://example.com/
-Tags: HexReport, WooCommerce
+Tags: HexReport, WooCommerce, Reports, Sales Report for WooCommerce, Store Report, Business Report
 Requires PHP: 7.1
 Requires at least: 5.4
 Tested up to: 6.2.2
@@ -11,7 +11,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
-Extend the default WooCommerce coupon system and add new functionality to control the coupon system.
+Get extensive report of your WooCommerce store.
 
 
 == Installation ==
