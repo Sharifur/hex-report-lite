@@ -47,8 +47,8 @@ export default function Sidebar(){
 					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></Link>
 				</li>
 				<li>
-					<Link to="/sales/by-product-type"
-						  onClick={() => handleMenuItemClick('/sales/by-product-type')} className={`${activeMenuItem === '/sales/by-product-type' ? 'active' : ''}`}
+					<Link to="/sales/by-categories"
+						  onClick={() => handleMenuItemClick('/sales/by-categories')} className={`${activeMenuItem === '/sales/by-categories' ? 'active' : ''}`}
 					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__("Sales by Categories","hexreport")}</span></Link>
 				</li>
 				<li>

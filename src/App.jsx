@@ -5,6 +5,7 @@ import "line-awesome/dist/line-awesome/css/line-awesome.min.css";
 import AccountSettings from "./pages/account-settings";
 import Dashboard from "./components/Page/Dashboard";
 import ByProduct from "./pages/sales/by-product";
+import ByCategories from "./pages/sales/by-categories";
 // import Sales from "./pages/sales/by-channel";
 export default function App() {
 	const windowLocation = window.location.pathname;
@@ -21,6 +22,7 @@ export default function App() {
 					<Routes>
 						{/*<Route element={<Dashboard/>} path="/"/>*/}
 						<Route element={<ByProduct />} path="/sales/by-product"/>
+						<Route element={<ByCategories />} path="/sales/by-categories"/>
 					</Routes>
 				</MainLayoutContainer>
 			</div>

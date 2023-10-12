@@ -1260,45 +1260,296 @@ use CodesVault\Howdyqb\DB;
 
 
 
-if (class_exists('WooCommerce')) {
-	$firstTopProductName  = '';
-	$secondTopProductName = '';
+//if (class_exists('WooCommerce')) {
+//	$firstTopProductName  = '';
+//	$secondTopProductName = '';
+//
+//	// Query to get the top-selling products
+//	$args = array(
+//		'post_type' => 'product',
+//		'posts_per_page' => 2,
+//		'orderby' => 'meta_value_num',
+//		'meta_key' => 'total_sales',
+//		'order' => 'DESC',
+//	);
+//
+//	$topProducts = new WP_Query($args);
+//	$arr = [];
+//	while( $topProducts->have_posts() ) {
+//		$topProducts->the_post();
+//		$arr[] = get_the_title();
+//	}
+//
+//	if ($topProducts->have_posts()) {
+//		$topProducts->the_post();
+//
+//		// Get the name of the first best-selling product
+//		$firstTopProductName = get_the_title();
+//
+//		// Skip the first product to get the second best-selling product
+//		$topProducts->the_post();
+//
+//		// Get the name of the second best-selling product
+//		$secondTopProductName = get_the_title();
+//
+//		wp_reset_postdata();
+//	}
+//}
+////echo 'first best selling product name: ' . $firstTopProductName . '<br>';
+////echo "Second Best Selling Product Name: " . $secondTopProductName;
+//
+//	echo $arr[0];
+//echo '<br>';
+//echo $arr[1];
 
-	// Query to get the top-selling products
-	$args = array(
-		'post_type' => 'product',
-		'posts_per_page' => 2,
-		'orderby' => 'meta_value_num',
-		'meta_key' => 'total_sales',
-		'order' => 'DESC',
-	);
+//
+//// Initialize arrays to store category names and sales count
+//$category_names = array();
+//$category_sales = array();
+//
+//// Set the number of categories to retrieve (top 10)
+//$limit = 10;
+//
+//// Get completed orders
+//$completed_orders = wc_get_orders(array(
+//	'status' => 'completed',
+//));
+//
+//// Iterate through completed orders
+//foreach ($completed_orders as $order) {
+//	$order_items = $order->get_items();
+//
+//	foreach ($order_items as $item) {
+//		$product_id = $item->get_product_id();
+//		$product = wc_get_product($product_id);
+//		$product_categories = $product->get_category_ids();
+//
+//		foreach ($product_categories as $category_id) {
+//			$category_name = get_term($category_id, 'product_cat')->name;
+//
+//			if (array_key_exists($category_name, $category_sales)) {
+//				$category_sales[$category_name] += $item->get_quantity();
+//			} else {
+//				$category_sales[$category_name] = $item->get_quantity();
+//			}
+//		}
+//	}
+//}
+//
+//// Sort categories by sales count in descending order
+//arsort($category_sales);
+//
+//// Limit to the top 10 categories
+//$category_sales = array_slice($category_sales, 0, $limit, true);
+//
+//// Populate the arrays
+//$category_names = array_keys($category_sales);
+//$category_sales = array_values($category_sales);
+//
+//// Print or use the arrays as needed
+//print_r($category_names);
+//print_r($category_sales);
 
-	$topProducts = new WP_Query($args);
-	$arr = [];
-	while( $topProducts->have_posts() ) {
-		$topProducts->the_post();
-		$arr[] = get_the_title();
-	}
+//
+//// Define the query parameters to fetch completed orders
+//$args = array(
+//	'post_type' => 'shop_order',
+//	'post_status' => 'wc-completed', // Filter for completed orders
+//	'posts_per_page' => -1, // Fetch all orders
+//);
+//
+//// Get completed orders
+//$orders = new \WP_Query( $args );
+//
+//// Initialize an empty array to store category counts
+//$category_counts = [];
+//$total_order_count = 0;
+//
+//// Loop through the completed orders
+//if ( $orders->have_posts() ) {
+//	while ( $orders->have_posts() ) {
+//		$orders->the_post();
+//
+//		$total_order_count++;
+//
+//		// Get order items
+//		$order = wc_get_order(get_the_ID());
+//		$items = $order->get_items();
+//
+//		foreach ( $items as $item ) {
+//			// Get product categories for each item
+//			$product_id = $item->get_product_id();
+//			$product = wc_get_product($product_id);
+//			$categories = $product->get_category_ids();
+//
+//			foreach ( $categories as $category_id ) {
+//				// Increment category count
+//				if ( isset( $category_counts[$category_id] ) ) {
+//					$category_counts[$category_id]['count']++;
+//				} else {
+//					$category_counts[$category_id] = array(
+//						'name' => get_term( $category_id, 'product_cat' )->name,
+//						'count' => 1
+//					);
+//				}
+//			}
+//		}
+//	}
+//}
+//
+//// Sort categories by count in descending order
+//arsort($category_counts);
+//
+//// Display the top 6 selling categories
+//$top_categories = array_slice( $category_counts, 0, 6 );
+//
+//// Restore the global $post variable
+//wp_reset_postdata();
+//$new_array = array_column($top_categories,'name');
+//echo '<pre>';
+//var_dump($new_array);
+//echo '</pre>';
 
-	if ($topProducts->have_posts()) {
-		$topProducts->the_post();
+//// Get completed orders
+//$completed_orders = wc_get_orders(array(
+//	'status' => 'wc-completed',
+//));
+//
+//// Count the total number of completed orders
+//$total_completed_orders = count($completed_orders);
+//
+//// Print the total number of completed orders
+//echo "Total Completed Orders: " . $total_completed_orders;
 
-		// Get the name of the first best-selling product
-		$firstTopProductName = get_the_title();
 
-		// Skip the first product to get the second best-selling product
-		$topProducts->the_post();
+//// Initialize arrays to store category names and sales count
+//$category_names = array();
+//$category_sales = array();
+//$total_order_count = 0; // Initialize the order count
+//
+//// Set the number of categories to retrieve (top 10)
+//$limit = 10;
+//
+//// Get completed orders
+//$completed_orders = wc_get_orders(array(
+//	'post_type' => 'shop_order',
+//	'status' => 'completed',
+//));
+//
+//// Iterate through completed orders
+//foreach ($completed_orders as $order) {
+//	$total_order_count++; // Increment the order count
+//
+//	$order_items = $order->get_items();
+//
+//	foreach ($order_items as $item) {
+//		$product_id = $item->get_product_id();
+//		$product = wc_get_product($product_id);
+//		$product_categories = $product->get_category_ids();
+//
+//		foreach ($product_categories as $category_id) {
+//			$category_name = get_term($category_id, 'product_cat')->name;
+//
+//			if (array_key_exists($category_name, $category_sales)) {
+//				$category_sales[$category_name] += $item->get_quantity();
+//			} else {
+//				$category_sales[$category_name] = $item->get_quantity();
+//			}
+//		}
+//	}
+//}
+//
+//// Sort categories by sales count in descending order
+//arsort($category_sales);
+//
+//// Limit to the top 10 categories
+//$category_sales = array_slice($category_sales, 0, $limit, true);
+//
+//// Populate the arrays
+//$category_names = array_keys($category_sales);
+//$category_sales = array_values($category_sales);
+//
+//$category_sales_ratio = [];
+//
+//foreach ( $category_sales as $single_item ) {
+//	$category_sales_ratio[] = $single_item / $total_order_count * 100;
+//}
+//var_dump($total_order_count);
+//var_dump($category_sales_ratio);
 
-		// Get the name of the second best-selling product
-		$secondTopProductName = get_the_title();
 
-		wp_reset_postdata();
+// Initialize arrays to store category names and sales count
+$product_names = array();
+$product_sales = array();
+$category_names = array();
+$category_sales = array();
+$total_order_count = 0; // Initialize the order count
+
+// Set the number of categories to retrieve (top 10)
+$limit = 10;
+
+// Get completed orders
+$completed_orders = wc_get_orders(array(
+	'status' => 'completed',
+));
+
+// Iterate through completed orders
+foreach ($completed_orders as $order) {
+	$total_order_count++; // Increment the order count
+
+	$order_items = $order->get_items();
+
+	foreach ($order_items as $item) {
+		$product_id = $item->get_product_id();
+		$product = wc_get_product($product_id);
+		$product_categories = $product->get_category_ids();
+		$product_name = $product->get_name(); // Get the product name
+
+		if (array_key_exists($product_name, $product_sales)) {
+			$product_sales[$product_name] += $item->get_quantity();
+		} else {
+			$product_sales[$product_name] = $item->get_quantity();
+		}
+
+		foreach ($product_categories as $category_id) {
+			$category_name = get_term($category_id, 'product_cat')->name;
+
+			if (array_key_exists($category_name, $category_sales)) {
+				$category_sales[$category_name] += $item->get_quantity();
+			} else {
+				$category_sales[$category_name] = $item->get_quantity();
+			}
+		}
 	}
 }
-//echo 'first best selling product name: ' . $firstTopProductName . '<br>';
-//echo "Second Best Selling Product Name: " . $secondTopProductName;
 
-	echo $arr[0];
-echo '<br>';
-echo $arr[1];
+// Sort products by sales count in descending order
+arsort($product_sales);
 
+// Limit to the top 10 products
+$product_sales = array_slice($product_sales, 0, $limit, true);
+
+// Populate the arrays
+$product_names = array_keys($product_sales);
+$product_sales = array_values($product_sales);
+
+// Sort categories by sales count in descending order
+arsort($category_sales);
+
+// Limit to the top 10 categories
+$category_sales = array_slice($category_sales, 0, $limit, true);
+
+// Populate the arrays
+$category_names = array_keys($category_sales);
+$category_sales = array_values($category_sales);
+
+$category_sales_ratio = [];
+
+foreach ( $category_sales as $single_item ) {
+	$category_sales_ratio[] = $single_item / $total_order_count * 100;
+}
+
+
+var_dump($product_names);
+
+var_dump($product_sales);

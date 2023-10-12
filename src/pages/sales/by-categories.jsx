@@ -13,12 +13,12 @@ import { __ } from '@wordpress/i18n';
 
 
 
-export default function ByProduct(){
+export default function ByCategories(){
 	const {nonce,ajaxUrl,translate_array} = hexReportData;
 
-	const [topSellingProductsNames, setTopSellingProductsNames] = useState([]);
-	const [topSellingProductsCount, setTopSellingProductsCount] = useState([]);
-	const [productSaleRatio, setProductSaleRatio] = useState([]);
+	const [topSellingCategoriesNames, setTopSellingCategoriesNames] = useState([]);
+	const [topSellingCategoriesCount, setTopSellingCategoriesCount] = useState([]);
+	const [categoriesSaleRatio, setCategoriesSaleRatio] = useState([]);
 
 	useEffect(() => {
 		axios
@@ -33,9 +33,9 @@ export default function ByProduct(){
 			})
 			.then(({data}) => {
 				if (data) {
-					setTopSellingProductsNames(data.topSellingProductsNames)
-					setTopSellingProductsCount(data.topSellingProductsCount)
-					setProductSaleRatio(data.productSaleRatio)
+					setTopSellingCategoriesNames(data.topSellingCategoreisNames)
+					setTopSellingCategoriesCount(data.topSellingCategoreisCount)
+					setCategoriesSaleRatio(data.categoriesSalesRatio)
 				}
 				// Handle the response data
 			})
@@ -45,19 +45,19 @@ export default function ByProduct(){
 
 	}, []);
 
-	const cardListItems = topSellingProductsNames.map((name, index) => ({
+	const cardListItems = topSellingCategoriesNames.map((name, index) => ({
 		title: name,
-		amount: "("+productSaleRatio[index].toFixed(2)+"%)",
+		amount: "("+categoriesSaleRatio[index].toFixed(2)+"%)",
 	}));
 
 	const noSaleText = __("No sales yet","hexreport");
 
 	const doughnutProductData = {
-		labels: topSellingProductsNames.length > 0 ? topSellingProductsNames : [noSaleText],
+		labels: topSellingCategoriesNames.length > 0 ? topSellingCategoriesNames : [noSaleText],
 		datasets: [
 			{
 				label: __("No of times", "hexreport"),
-				data: topSellingProductsCount.length > 0 ? topSellingProductsCount : [1],
+				data: topSellingCategoriesCount.length > 0 ? topSellingCategoriesCount : [1],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.2)',
 					'rgba(54, 162, 235, 0.2)',
@@ -79,27 +79,27 @@ export default function ByProduct(){
 		],
 	};
 
-    return (
-        <PageLayout pageTitle="Sales By Product">
-            <Card padd="0">
-                <PageHeader pageTitle={__("Sales By Product","hexreport")} extraClass="padding-20 padding-bottom-0"/>
-                <div className="commonFilterWrap pb0">
+	return (
+		<PageLayout pageTitle="Sales By Categories">
+			<Card padd="0">
+				<PageHeader pageTitle={__("Sales By Categories","hexreport")} extraClass="padding-20 padding-bottom-0"/>
+				<div className="commonFilterWrap pb0">
 
-                </div>
-                <Container col="1">
-                    <div className="chartWithListWrapper">
-                        <div className="donChart">
+				</div>
+				<Container col="1">
+					<div className="chartWithListWrapper">
+						<div className="donChart">
 							<DoughnutChart labels={doughnutProductData.labels} datasets={doughnutProductData.datasets}/>
-                        </div>
-                        <div className="orderListWrapper">
-                            <CardList lists={cardListItems}/>
-                        </div>
-                    </div>
-                </Container>
-            </Card>
-            <Card extraClass="margin-top-20">
-                <BarChart title={__("Sales By Product","hexreport")}/>
-            </Card>
-        </PageLayout>
-    );
+						</div>
+						<div className="orderListWrapper">
+							<CardList lists={cardListItems}/>
+						</div>
+					</div>
+				</Container>
+			</Card>
+			<Card extraClass="margin-top-20">
+				<BarChart title={__("Sales By Categories","hexreport")}/>
+			</Card>
+		</PageLayout>
+	);
 }

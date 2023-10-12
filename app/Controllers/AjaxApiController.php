@@ -28,11 +28,10 @@ class AjaxApiController extends Controller
 		add_action( 'wp_ajax_total_completed_order_in_three_phases', [ $this, 'total_completed_order_in_three_phases' ] );
 		add_action( 'wp_ajax_total_order_ratio', [ $this, 'total_order_ratio' ] );
 		add_action( 'wp_ajax_count_payment_method_ratio', [ $this, 'count_payment_method_ratio' ] );
-		add_action( 'wp_ajax_show_top_six_selling_categories', [ $this, 'show_top_six_selling_categories' ] );
-		add_action( 'wp_ajax_show_top_selling_products', [ $this, 'show_top_selling_products' ] );
 		add_action( 'wp_ajax_show_first_top_selling_product_monthly_data', [ $this, 'show_first_top_selling_product_monthly_data' ] );
 		add_action( 'wp_ajax_get_second_top_product_monthly_data', [ $this, 'get_second_top_product_monthly_data' ] );
 		add_action( 'wp_ajax_get_top_two_selling_product_name', [ $this, 'get_top_two_selling_product_name' ] );
+		add_action( 'wp_ajax_get_top_selling_product_and_categoreis', [ $this, 'get_top_selling_product_and_categoreis' ] );
 	}
 
 	/**
@@ -505,187 +504,6 @@ class AjaxApiController extends Controller
 	 * @package hexreport
 	 * @author WpHex
 	 * @since 1.0.0
-	 * @method show_top_six_selling_categories
-	 * @return void
-	 * Get the top six selling categories data.
-	 */
-	public function show_top_six_selling_categories()
-	{
-		// Define the query parameters to fetch completed orders
-		$args = array(
-			'post_type' => 'shop_order',
-			'post_status' => 'wc-completed', // Filter for completed orders
-			'posts_per_page' => -1, // Fetch all orders
-		);
-
-		// Get completed orders
-		$orders = new \WP_Query( $args );
-
-		// Initialize an empty array to store category counts
-		$category_counts = [];
-		$total_order_count = 0;
-
-		// Loop through the completed orders
-		if ( $orders->have_posts() ) {
-			while ( $orders->have_posts() ) {
-				$orders->the_post();
-
-				$total_order_count++;
-
-				// Get order items
-				$order = wc_get_order(get_the_ID());
-				$items = $order->get_items();
-
-				foreach ( $items as $item ) {
-					// Get product categories for each item
-					$product_id = $item->get_product_id();
-					$product = wc_get_product($product_id);
-					$categories = $product->get_category_ids();
-
-					foreach ( $categories as $category_id ) {
-						// Increment category count
-						if ( isset( $category_counts[$category_id] ) ) {
-							$category_counts[$category_id]['count']++;
-						} else {
-							$category_counts[$category_id] = array(
-								'name' => get_term( $category_id, 'product_cat' )->name,
-								'count' => 1
-							);
-						}
-					}
-				}
-			}
-		}
-
-		// Sort categories by count in descending order
-		arsort($category_counts);
-
-		// Display the top 6 selling categories
-		$top_categories = array_slice( $category_counts, 0, 6 );
-
-		// Restore the global $post variable
-		wp_reset_postdata();
-
-		$catOneSellingRatio = ! empty( $top_categories[0]['count'] ) ? $top_categories[0]['count'] / $total_order_count * 100 : 0;
-
-		$catTwoSellingRatio = ! empty( $top_categories[1]['count'] ) ? $top_categories[1]['count'] / $total_order_count * 100 : 0;
-
-		$catThreeSellingRatio = ! empty( $top_categories[2]['count'] ) ? $top_categories[2]['count'] / $total_order_count * 100 : 0;
-
-		$catFourSellingRatio = ! empty( $top_categories[3]['count'] ) ? $top_categories[3]['count'] / $total_order_count * 100 : 0;
-
-		$catFiveSellingRatio = ! empty( $top_categories[4]['count'] ) ? $top_categories[4]['count'] / $total_order_count * 100 : 0;
-
-		$catSixSellingRatio = ! empty( $top_categories[5]['count'] ) ? $top_categories[5]['count'] / $total_order_count * 100 : 0;
-
-		// Check the nonce and action
-		if ( $this->verify_nonce() ) {
-			// Nonce is valid, proceed with your code
-			wp_send_json( [
-				// Response data here
-				'msg' => __('hello'),
-				'type' => 'success',
-				'topCatNameOne' => __( $top_categories[0]['name'] ),
-				'topCatOneSellRatio' => __( $catOneSellingRatio ),
-				'topCatNameTwo' => __( $top_categories[1]['name'] ),
-				'topCatTwoSellRatio' => __( $catTwoSellingRatio ),
-				'topCatNameThree' => __( $top_categories[2]['name'] ),
-				'topCatThreeSellRatio' => __( $catThreeSellingRatio ),
-				'topCatNameFour' => __( $top_categories[3]['name'] ),
-				'topCatFourSellRatio' => __( $catFourSellingRatio ),
-				'topCatNameFive' => __( $top_categories[4]['name'] ),
-				'topCatFiveSellRatio' => __( $catFiveSellingRatio ),
-				'topCatNameSix' => __( $top_categories[5]['name'] ),
-				'topCatSixSellRatio' => __( $catSixSellingRatio ),
-			], 200);
-		} else {
-			// Nonce verification failed, handle the error
-			wp_send_json( [
-				'error' => 'Nonce verification failed',
-			], 403); // 403 Forbidden status code
-		}
-	}
-
-	/**
-	 * @package hexreport
-	 * @author WpHex
-	 * @since 1.0.0
-	 * @method show_top_selling_products
-	 * @return void
-	 * Get the top six selling products data.
-	 */
-	public function show_top_selling_products( $limit = 10 )
-	{
-		// Query for the top-selling products using WooCommerce functions
-		$args = array(
-			'post_type' => 'product',
-			'post_status' => 'publish',
-			'posts_per_page' => $limit,
-			'orderby' => 'meta_value_num',
-			'meta_key' => 'total_sales', // WooCommerce tracks sales as custom post meta
-			'order' => 'DESC',
-		);
-
-		$top_selling_products = new \WP_Query( $args );
-
-		// Initialize an array to store product data with sales counts
-		$products_with_sales_count = [];
-
-		if ( ! empty( $top_selling_products->posts ) ) {
-			foreach ( $top_selling_products->posts as $product ) {
-				$product_id = $product->ID;
-
-				// Retrieve the sales count for each product
-				$sales_count = get_post_meta( $product_id, 'total_sales', true );
-
-				// Store product data with sales count
-				$products_with_sales_count[] = array(
-					'product' => $product,
-					'sales_count' => $sales_count,
-				);
-			}
-		}
-
-		$products_one_name = get_the_title( $products_with_sales_count[0]['product']->ID );
-		$products_two_name = get_the_title( $products_with_sales_count[1]['product']->ID );
-		$products_three_name = get_the_title( $products_with_sales_count[2]['product']->ID );
-		$products_four_name = get_the_title( $products_with_sales_count[3]['product']->ID );
-		$products_five_name = get_the_title( $products_with_sales_count[4]['product']->ID );
-		$products_six_name = get_the_title( $products_with_sales_count[5]['product']->ID );
-
-		// Check the nonce and action
-		if ( $this->verify_nonce() ) {
-			// Nonce is valid, proceed with your code
-			wp_send_json( [
-				// Response data here
-				'msg' => __('hello'),
-				'type' => 'success',
-				'topProNameOne' => __( $products_one_name ),
-				'topProNameTwo' => __( $products_two_name ),
-				'topProNameThree' => __( $products_three_name ),
-				'topProNameFour' => __( $products_four_name ),
-				'topProNameFive' => __( $products_five_name ),
-				'topProNameSix' => __( $products_six_name ),
-
-				'topProCountOne' => __( $products_with_sales_count[0]['sales_count'] ),
-				'topProCountTwo' => __( $products_with_sales_count[1]['sales_count'] ),
-				'topProCountThree' => __( $products_with_sales_count[2]['sales_count'] ),
-				'topProCountFour' => __( $products_with_sales_count[3]['sales_count'] ),
-				'topProCountFive' => __( $products_with_sales_count[4]['sales_count'] ),
-				'topProCountSix' => __( $products_with_sales_count[5]['sales_count'] ),
-			], 200);
-		} else {
-			// Nonce verification failed, handle the error
-			wp_send_json( [
-				'error' => 'Nonce verification failed',
-			], 403); // 403 Forbidden status code
-		}
-	}
-
-	/**
-	 * @package hexreport
-	 * @author WpHex
-	 * @since 1.0.0
 	 * @method show_first_top_selling_product_monthly_data
 	 * @return void
 	 * Get the first top-selling product monthly data.
@@ -959,6 +777,107 @@ class AjaxApiController extends Controller
 				'type' => 'success',
 				'firstTopSellingProductName' => __( $arr[0] ),
 				'secondTopSellingProductName' => __( $arr[1] ),
+			], 200);
+		} else {
+			// Nonce verification failed, handle the error
+			wp_send_json( [
+				'error' => 'Nonce verification failed',
+			], 403); // 403 Forbidden status code
+		}
+	}
+
+	public function get_top_selling_product_and_categoreis()
+	{
+		// Initialize arrays to store category names and sales count
+		$product_names = array();
+		$product_sales = array();
+		$category_names = array();
+		$category_sales = array();
+		$total_order_count = 0; // Initialize the order count
+
+		// Set the number of categories to retrieve (top 10)
+		$limit = 10;
+
+		// Get completed orders
+		$completed_orders = wc_get_orders(array(
+			'status' => 'completed',
+		));
+
+		// Iterate through completed orders
+		foreach ($completed_orders as $order) {
+			$total_order_count++; // Increment the order count
+
+			$order_items = $order->get_items();
+
+			foreach ($order_items as $item) {
+				$product_id = $item->get_product_id();
+				$product = wc_get_product($product_id);
+				$product_categories = $product->get_category_ids();
+				$product_name = $product->get_name(); // Get the product name
+
+				if (array_key_exists($product_name, $product_sales)) {
+					$product_sales[$product_name] += $item->get_quantity();
+				} else {
+					$product_sales[$product_name] = $item->get_quantity();
+				}
+
+				foreach ($product_categories as $category_id) {
+					$category_name = get_term($category_id, 'product_cat')->name;
+
+					if (array_key_exists($category_name, $category_sales)) {
+						$category_sales[$category_name] += $item->get_quantity();
+					} else {
+						$category_sales[$category_name] = $item->get_quantity();
+					}
+				}
+			}
+		}
+
+		// Sort products by sales count in descending order
+		arsort($product_sales);
+
+		// Limit to the top 10 products
+		$product_sales = array_slice($product_sales, 0, $limit, true);
+
+		// Populate the arrays
+		$product_names = array_keys($product_sales);
+		$product_sales = array_values($product_sales);
+
+		// Sort categories by sales count in descending order
+		arsort($category_sales);
+
+		// Limit to the top 10 categories
+		$category_sales = array_slice($category_sales, 0, $limit, true);
+
+		// Populate the arrays
+		$category_names = array_keys($category_sales);
+		$category_sales = array_values($category_sales);
+
+		$product_sale_ratio = [];
+
+		foreach ( $product_sales as $single_item ) {
+			$product_sale_ratio[] = $single_item / $total_order_count * 100;
+		}
+
+		$category_sales_ratio = [];
+
+		foreach ( $category_sales as $single_item ) {
+			$category_sales_ratio[] = $single_item / $total_order_count * 100;
+		}
+
+		// Check the nonce and action
+		if ( $this->verify_nonce() ) {
+			// Nonce is valid, proceed with your code
+			wp_send_json( [
+				// Response data here
+				'msg' => __('hello'),
+				'type' => 'success',
+				'topSellingCategoreisNames' => __( $category_names ),
+				'topSellingCategoreisCount' => __( $category_sales ),
+				'categoriesSalesRatio' => __( $category_sales_ratio ),
+				'topSellingProductsNames' => __( $product_names ),
+				'topSellingProductsCount' => __( $product_sales ),
+				'productSaleRatio' => __( $product_sale_ratio ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
