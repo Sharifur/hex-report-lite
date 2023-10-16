@@ -1,4 +1,3 @@
-
 import PageLayout from "../../components/Layouts/PageLayout.jsx";
 import PageHeader from "../../components/Sections/PageHeader.jsx";
 import Card from "../../components/Cards/Card.jsx";
@@ -11,10 +10,8 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { __ } from '@wordpress/i18n';
 
-
-
 export default function ByCategories(){
-	const {nonce,ajaxUrl,translate_array} = hexReportData;
+	const {nonce,ajaxUrl} = hexReportData;
 
 	const [topSellingCategoriesNames, setTopSellingCategoriesNames] = useState([]);
 	const [topSellingCategoriesCount, setTopSellingCategoriesCount] = useState([]);
@@ -22,6 +19,9 @@ export default function ByCategories(){
 
 	const [topFirstSellingCategoryName, setTopFirstSellingCategoryName] = useState([]);
 	const [topSecondSellingCategoryName, setTopSecondSellingCategoryName] = useState([]);
+
+	const [topFirstCategoryMonthlySellData, setTopFirstCategoryMonthlySellData] = useState([]);
+	const [topSecondCategoryMonthlySellData, setTopSecondCategoryMonthlySellData] = useState([]);
 
 	useEffect(() => {
 		axios
@@ -47,6 +47,7 @@ export default function ByCategories(){
 			});
 
 	}, []);
+
 	useEffect(() => {
 		axios
 			.get(ajaxUrl, {
@@ -70,11 +71,47 @@ export default function ByCategories(){
 			});
 
 	}, []);
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'get_top_two_categories_monthly_data',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTopFirstCategoryMonthlySellData(data.firstCatMonthData)
+					setTopSecondCategoryMonthlySellData(data.secondCatMonthData)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
 
-	const cardListItems = topSellingCategoriesNames.map((name, index) => ({
-		title: name,
-		amount: "("+categoriesSaleRatio[index].toFixed(2)+"%)",
-	}));
+	}, []);
+
+	const noDataText = __("No Data Yet","hexreport");
+
+	let cardListItems;
+
+	if(topSellingCategoriesNames.length>0){
+		cardListItems = topSellingCategoriesNames.map((name, index) => ({
+			title: name,
+			amount: "("+categoriesSaleRatio[index].toFixed(2)+"%)",
+		}));
+	} else {
+		cardListItems = [
+			{ title: noDataText, amount: "(00.00%)" },
+			{ title: noDataText, amount: "(00.00%)" },
+			{ title: noDataText, amount: "(00.00%)" },
+			{ title: noDataText, amount: "(00.00%)" },
+		];
+	}
 
 	const noSaleText = __("No sales yet","hexreport");
 
@@ -107,11 +144,11 @@ export default function ByCategories(){
 
 	const label1 = topFirstSellingCategoryName;
 	const label2 = topSecondSellingCategoryName;
-	const data1 = [10, 20, 30, 40, 50, 50, 50, 50, 50, 50, 50, 50];
-	const data2 = [5, 15, 25, 35, 45, 45, 45, 45, 45, 45, 45, 45];
+	const data1 = topFirstCategoryMonthlySellData;
+	const data2 = topSecondCategoryMonthlySellData;
 
 	return (
-	<PageLayout pageTitle="Sales By Categories">
+		<>
 			<Card padd="0">
 				<PageHeader pageTitle={__("Sales By Categories","hexreport")} extraClass="padding-20 padding-bottom-0"/>
 				<div className="commonFilterWrap pb0">
@@ -129,8 +166,8 @@ export default function ByCategories(){
 				</Container>
 			</Card>
 			<Card extraClass="margin-top-20">
-				<BarChart title={__("Sales By Categories","hexreport")} label1={label1} label2={label2} data1={data1} data2={data2}/>
+				<BarChart title={__("Sales By Categories","hexreport")} label1={label1 ? label1 : noDataText} label2={label2 ? label2 : noDataText} data1={data1 ? data1 : noDataText} data2={data2 ? data2 : noDataText}/>
 			</Card>
-		</PageLayout>
+		</>
 	);
 }

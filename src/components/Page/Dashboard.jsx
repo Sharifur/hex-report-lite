@@ -38,7 +38,7 @@ export default function Dashboard(){
 	const [totalSalesOfYear , setTotalSalesOfYear] = useState([]);
 	const [totalVisitorsCount , setTotalVisitorsCount] = useState([]);
 
-	const {nonce,ajaxUrl,translate_array} = hexReportData;
+	const {nonce,ajaxUrl} = hexReportData;
 
 	useEffect(() => {
 		axios
@@ -205,13 +205,15 @@ export default function Dashboard(){
 			visitors: __( 'Visitors', 'hexreport' ),
 		};
 
+	const noDataFoundText = __("No data found","hexreport");
+
     const cardListItems = [
-        {title: translatedText.cancelled,amount: "("+cancelledOrderRation.toFixed(2)+"%)"},
-        {title: translatedText.refunded,amount: "("+refundedOrderRation.toFixed(2)+"%)"},
-        {title: translatedText.failed,amount: "("+failedOrderRation.toFixed(2)+"%)"},
-		{title: translatedText.directBankTranser,amount: "("+bankTransferRation.toFixed(2)+"%)"},
-		{title: translatedText.checkPayments,amount: "("+checkPaymentRatio.toFixed(2)+"%)"},
-		{title: translatedText.cashOnDelivery,amount: "("+cashOnDeliveryRatio.toFixed(2)+"%)"},
+        {title: translatedText.cancelled,amount: cancelledOrderRation ? "("+cancelledOrderRation.toFixed(2)+"%)" : "No data found"},
+        {title: translatedText.refunded,amount: refundedOrderRation ? "("+refundedOrderRation.toFixed(2)+"%)" : "No data found"},
+        {title: translatedText.failed,amount: failedOrderRation ? "("+failedOrderRation.toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.directBankTranser,amount: bankTransferRation ? "("+bankTransferRation.toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.checkPayments,amount: checkPaymentRatio ? "("+checkPaymentRatio.toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.cashOnDelivery,amount: cashOnDeliveryRatio ? "("+cashOnDeliveryRatio.toFixed(2)+"%)" : "No data found"},
     ];
 
 	const doughnutDashboardData = {
@@ -230,17 +232,17 @@ export default function Dashboard(){
     return (
         <>
 			<Container col={3}>
-				<DashBox title={translatedText.completedOrders} text={totalSales} />
-				<DashBox title={translatedText.totalOrders} text={totalOrdersAmount}  />
-				<DashBox title={translatedText.cancelledOrders} text={totalCancelledAmount} />
-				<DashBox title={`${translatedText.topSellingProduct} ${topSellingProductName}`} text={topSellingProductPrice} />
+				<DashBox title={translatedText.completedOrders} text={totalSales ? totalSales : 0} />
+				<DashBox title={translatedText.totalOrders} text={totalOrdersAmount ? totalOrdersAmount : 0}  />
+				<DashBox title={translatedText.cancelledOrders} text={totalCancelledAmount ? totalCancelledAmount : 0} />
+				<DashBox title={`${translatedText.topSellingProduct} ${topSellingProductName}`} text={topSellingProductPrice ? topSellingProductPrice : 0} />
 
-				<DashBox title={`${translatedText.topSellingCategory} ${topSellingCatName}`} text={topSellingCatPrice}  />
-				<DashBox title={translatedText.refunded} text={totalRefundedAmount} />
+				<DashBox title={`${translatedText.topSellingCategory} ${topSellingCatName}`} text={topSellingCatPrice ? topSellingCatPrice : 0}  />
+				<DashBox title={translatedText.refunded} text={totalRefundedAmount ? totalRefundedAmount : 0} />
             </Container>
             <Container col={2} extraClass={'margin-top-30'}>
-                <SalesChart title={translatedText.sales} data={totalSalesOfYear}/>
-                <SalesChart title={translatedText.visitors} data={totalVisitorsCount}/>
+                <SalesChart title={translatedText.sales} data={totalSalesOfYear ? totalSalesOfYear : []}/>
+                <SalesChart title={translatedText.visitors} data={totalVisitorsCount ? totalVisitorsCount : []}/>
             </Container>
             <Container col={2} extraClass={'margin-top-30'}>
                 <Card>

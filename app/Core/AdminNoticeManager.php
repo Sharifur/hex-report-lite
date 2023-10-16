@@ -160,7 +160,7 @@ class AdminNoticeManager
 	private function get_woocommerce_active_notice_message()
 	{
 		$activate_url = wp_nonce_url( admin_url( 'plugins.php?action=activate&plugin=' . urlencode( $this->woocommerce_plugin_url ) ), 'activate-plugin_' . $this->woocommerce_plugin_url );
-		return sprintf( __( 'WooCommerce plugin is not active. Please <a href="%s">activate the WooCommerce</a> plugin to use HexCoupon features.','hexreport' ), esc_url( $activate_url ) );
+		return sprintf( __( 'WooCommerce plugin is not active. Please <a href="%s">activate the WooCommerce</a> plugin to use HexReport features.','hexreport' ), esc_url( $activate_url ) );
 	}
 
 	/**
@@ -174,7 +174,7 @@ class AdminNoticeManager
 	private function get_woocommerce_install_notice_message()
 	{
 		$install_url = wp_nonce_url( admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
-		return sprintf( __( 'WooCommerce plugin is not installed. Please <a href="%s">install the WooCommerce plugin</a> to use Hexcoupon features.','hexreport' ), esc_url( $install_url ) );
+		return sprintf( __( 'WooCommerce plugin is not installed. Please <a href="%s">install the WooCommerce plugin</a> to use HexReport features.','hexreport' ), esc_url( $install_url ) );
 	}
 
 	/**

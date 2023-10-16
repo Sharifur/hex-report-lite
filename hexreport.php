@@ -4,11 +4,11 @@
  *
  * Plugin Name: HexReport
  * Plugin URI: https://wordpress.org/plugins/hexreport
- * Description: Get extensive report of WooCommerce store.
+ * Description: Get extensive report of your WooCommerce store.
  * Version: 1.0.0
  * Author: WpHex
  * Requires at least: 5.4
- * Tested up to: 6.2.2
+ * Tested up to: 6.3
  * Requires PHP: 7.1
  * WC requires at least: 6.0
  * WC tested up to: 7.8.2
@@ -19,9 +19,9 @@
  * Domain Path: /languages
  */
 
-use HexReport\App\Core\Core;
-
 if ( ! defined( 'ABSPATH' ) ) die();
+
+use HexReport\App\Core\Core;
 
 define( 'HEXREPORT_FILE', __FILE__ );
 

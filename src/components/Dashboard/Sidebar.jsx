@@ -13,11 +13,11 @@ export default function Sidebar(){
 
     const [toggleDropdown,setToggleDropdown] = useState(false);
 
-	const {nonce,ajaxUrl,translate_array} = hexReportData;
 
-	const [searchParams, setSearchParams] = useSearchParams();
-	searchParams.set("page", "hexreport-page");
-	setSearchParams(searchParams);
+
+	// const [searchParams, setSearchParams] = useSearchParams();
+	// searchParams.set("page", "hexreport-page");
+	// setSearchParams(searchParams);
 
     const handleMenuItemClick = (path) => {
         setActiveMenuItem(path);
@@ -36,27 +36,21 @@ export default function Sidebar(){
             </div>
             <ul>
                 <li className={`${activeMenuItem === '/' ? 'active' : ''}`}>
-                    <Link to={windowParams}>
+                    <Link to={'/' +windowParams}>
                         <img src={DashboardIcon} alt="dashboard icon"/>
                         <span className="menuText">{__("Dashboard","hexreport")} </span>
                     </Link>
                 </li>
 				<li>
-					<Link to={"/sales/by-product"}
+					<Link to={"/sales/by-product" + windowParams}
 						  onClick={() => handleMenuItemClick('/sales/by-product')} className={`${activeMenuItem === '/sales/by-product' ? 'active' : ''}`}
 					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></Link>
 				</li>
 				<li>
-					<Link to="/sales/by-categories"
+					<Link to={"/sales/by-categories" + windowParams}
 						  onClick={() => handleMenuItemClick('/sales/by-categories')} className={`${activeMenuItem === '/sales/by-categories' ? 'active' : ''}`}
 					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__("Sales by Categories","hexreport")}</span></Link>
 				</li>
-				<li>
-					<Link to="/sales/by-locations"
-						  onClick={() => handleMenuItemClick('/sales/by-locations')} className={`${activeMenuItem === '/sales/by-locations' ? 'active' : ''}`}
-					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__("Sales by Locations","hexreport")}</span></Link>
-				</li>
-
             </ul>
         </div>
     )

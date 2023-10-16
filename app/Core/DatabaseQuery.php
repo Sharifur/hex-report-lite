@@ -41,9 +41,21 @@ class DatabaseQuery
 				->from( 'hexreport_visitor_log hexreport_visitor_log' )
 				->get();
 
-		if ( $current_year != $result2[0]['Year'] ) {
+		if (  ! empty( $result2[0]['Year'] ) && $current_year != $result2[0]['Year'] ) {
 			DB::update('hexreport_visitor_log', [
 				'Year' => $current_year,
+				'January' => 0,
+				'February' => 0,
+				'March' => 0,
+				'April' => 0,
+				'May' => 0,
+				'June' => 0,
+				'July' => 0,
+				'August' => 0,
+				'September' => 0,
+				'October' => 0,
+				'November' => 0,
+				'December' => 0,
 			] )
 				->where('Year', '!=', $current_year)
 				->execute();

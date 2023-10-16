@@ -1,4 +1,3 @@
-
 import PageLayout from "../../components/Layouts/PageLayout.jsx";
 import PageHeader from "../../components/Sections/PageHeader.jsx";
 import Card from "../../components/Cards/Card.jsx";
@@ -10,12 +9,9 @@ import BarChart from "../../components/charts/BarChart.jsx";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { __ } from '@wordpress/i18n';
-import {data} from "autoprefixer";
-
-
 
 export default function ByProduct(){
-	const {nonce,ajaxUrl,translate_array} = hexReportData;
+	const {nonce,ajaxUrl} = hexReportData;
 
 	const [topSellingProductsNames, setTopSellingProductsNames] = useState([]);
 	const [topSellingProductsCount, setTopSellingProductsCount] = useState([]);
@@ -120,11 +116,23 @@ export default function ByProduct(){
 
 	}, []);
 
+	const noDataText = __("No Data Yet","hexreport");
 
-	const cardListItems = topSellingProductsNames.map((name, index) => ({
-		title: name,
-		amount: "("+productSaleRatio[index].toFixed(2)+"%)",
-	}));
+	let cardListItems;
+
+	if (topSellingProductsNames.length > 0) {
+		cardListItems = topSellingProductsNames.map((name, index) => ({
+			title: name,
+			amount: "(" + productSaleRatio[index].toFixed(2) + "%)",
+		}));
+	} else {
+		cardListItems = [
+			{ title: noDataText, amount: "(00.00%)" },
+			{ title: noDataText, amount: "(00.00%)" },
+			{ title: noDataText, amount: "(00.00%)" },
+			{ title: noDataText, amount: "(00.00%)" },
+		];
+	}
 
 	const noSaleText = __("No sales yet","hexreport");
 
@@ -161,26 +169,26 @@ export default function ByProduct(){
 	const data2 = topSecondSellingProductMonthlyData;
 
     return (
-        <PageLayout pageTitle="Sales By Product">
-            <Card padd="0">
-                <PageHeader pageTitle={__("Sales By Product","hexreport")} extraClass="padding-20 padding-bottom-0"/>
-                <div className="commonFilterWrap pb0">
+            <>
+				<Card padd="0">
+					<PageHeader pageTitle={__("Sales By Product","hexreport")} extraClass="padding-20 padding-bottom-0"/>
+					<div className="commonFilterWrap pb0">
 
-                </div>
-                <Container col="1">
-                    <div className="chartWithListWrapper">
-                        <div className="donChart">
-							<DoughnutChart labels={doughnutProductData.labels} datasets={doughnutProductData.datasets}/>
-                        </div>
-                        <div className="orderListWrapper">
-                            <CardList lists={cardListItems}/>
-                        </div>
-                    </div>
-                </Container>
-            </Card>
-            <Card extraClass="margin-top-20">
-				<BarChart title={__("Sales By Product","hexreport")} label1={label1} label2={label2} data1={data1} data2={data2}/>
-            </Card>
-        </PageLayout>
+					</div>
+					<Container col="1">
+						<div className="chartWithListWrapper">
+							<div className="donChart">
+								<DoughnutChart labels={doughnutProductData.labels} datasets={doughnutProductData.datasets}/>
+							</div>
+							<div className="orderListWrapper">
+								<CardList lists={cardListItems}/>
+							</div>
+						</div>
+					</Container>
+				</Card>
+				<Card extraClass="margin-top-20">
+					<BarChart title={__("Sales By Product","hexreport")} label1={label1 ? label1 : noDataText} label2={label2 ? label2 : noDataText} data1={data1 ? data1 : []} data2={data2 ? data2 : []}/>
+				</Card>
+			</>
     );
 }

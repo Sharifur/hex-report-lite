@@ -10,8 +10,6 @@ class AjaxApiController extends Controller
 {
 	use SingleTon;
 
-	private $base_url = 'hexreport/v1/';
-
 	/**
 	 * @package hexreport
 	 * @author WpHex
@@ -106,18 +104,20 @@ class AjaxApiController extends Controller
 		// Load the top-selling category object
 		$top_category = get_term( $top_category_id, 'product_cat' );
 
-		$top_selling_cat_name = $top_category->name;
-		$top_selling_cat_amount = $category_total_amounts[$top_category_id];
+		$top_selling_cat_name = ! empty( $top_category->name );
+		$top_selling_cat_amount = ! empty( $category_total_amounts[$top_category_id] ) ? $category_total_amounts[$top_category_id] : 0;
 
 		// Find the product with the highest quantity sold
-		arsort( $product_quantities ); // Sort the products by quantity in descending order
-		$top_product_id = key( $product_quantities ); // Get the product with the highest quantity
+		if ( ! empty( $product_quantities ) ) {
+			arsort( $product_quantities ); // Sort the products by quantity in descending order
+		}
+
+		$top_product_id = ! empty( $product_quantities ) ? key( $product_quantities ) : 0; // Get the product with the highest quantity
 
 		// Load the product object and get its price
 		$top_product = wc_get_product( $top_product_id );
-		$top_product_quantity = current( $product_quantities );
-		$top_product_price = $product_prices[$top_product_id];
-		$top_selling_product_name = $top_product->get_name();
+		$top_product_price = ! empty( $top_product_id ) ? $product_prices[$top_product_id] : 0;
+		$top_selling_product_name = ! empty( $top_product ) ? $top_product->get_name() : '';
 
 
 		$total_orders = $total_completed_sales + $total_cancelled_sales;
@@ -242,6 +242,8 @@ class AjaxApiController extends Controller
 				->from('hexreport_visitor_log hexreport_visitor_log')
 				->get();
 
+		$totalVisitorsCount = ! empty( $result[0] ) ? $result[0] : 0;
+
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
 			// Nonce is valid, proceed with your code
@@ -249,7 +251,7 @@ class AjaxApiController extends Controller
 				// Response data here
 				'msg' => __('hello'),
 				'type' => 'success',
-				'totalVisitorsCount' => __( $result[0] ),
+				'totalVisitorsCount' => __( $totalVisitorsCount ),
 
 			], 200);
 		} else {
@@ -288,26 +290,26 @@ class AjaxApiController extends Controller
 		$total_amount_sep_dec = 0;
 
 		// WP_Query to fetch completed orders within the date ranges
-		$args = array(
+		$args = [
 			'post_type' => 'shop_order',
 			'post_status' => 'wc-completed',
 			'posts_per_page' => -1,
-			'date_query' => array(
+			'date_query' => [
 				'relation' => 'OR',
-				array(
+				[
 					'after' => $jan_apr_start,
 					'before' => $jan_apr_end,
-				),
-				array(
+				],
+				[
 					'after' => $may_aug_start,
 					'before' => $may_aug_end,
-				),
-				array(
+				],
+				[
 					'after' => $sep_dec_start,
 					'before' => $sep_dec_end,
-				),
-			),
-		);
+				],
+			],
+		];
 
 		$completed_orders_query = new \WP_Query( $args );
 
@@ -359,45 +361,47 @@ class AjaxApiController extends Controller
 	 * @return void
 	 * Get the total order ratio of 'cancelled', 'refunded', 'failed' orders.
 	 */
-	public function total_order_ratio() {
+	public function total_order_ratio()
+	{
 		// Get total orders for customer
-		$total_args = array(
+		$total_args = [
 			'post_type' => 'shop_order',
 			'return' => 'ids',
 			'limit' => -1, // Retrieve all orders
-		);
+		];
 
 		$total_orders = count( wc_get_orders( $total_args ) ); // count the array of orders
 
 		// Get CANCELLED orders for customer
-		$cancelled_args = array(
+		$cancelled_args = [
 			'post_status' => ['cancelled'],
 			'post_type' => 'shop_order',
 			'return' => 'ids',
 			'limit' => -1, // Retrieve all orders
-		);
+		];
 
 		$cancelled_order_numbers = count( wc_get_orders( $cancelled_args ) ); // count the array of orders
-		$cancelled_order_ratio = $cancelled_order_numbers / $total_orders * 100;
+		$cancelled_order_ratio = 0 != $total_orders ? $cancelled_order_numbers / $total_orders * 100 : 0;
 
 		// Get refunded orders for customer
-		$refunded_args = array(
+		$refunded_args = [
 			'post_status' => ['refunded'],
 			'post_type' => 'shop_order',
 			'return' => 'ids',
 			'limit' => -1, // Retrieve all orders
-		);
+		];
 		$refunded_order_numbers = count( wc_get_orders( ( $refunded_args ) ) );
-		$refunded_order_ration = $refunded_order_numbers / $total_orders * 100;
+		$refunded_order_ration = 0 != $total_orders ? $refunded_order_numbers / $total_orders * 100 : 0;
 
-		$failed_args = array(
+
+		$failed_args = [
 			'post_status' => ['failed'],
 			'post_type' => 'shop_order',
 			'return' => 'ids',
 			'limit' => -1, // Retrieve all orders
-		);
+		];
 		$failed_order_numbers = count( wc_get_orders( ( $failed_args ) ) );
-		$failed_order_ration = $failed_order_numbers / $total_orders * 100;
+		$failed_order_ration = 0 != $total_orders ? $failed_order_numbers / $total_orders * 100 : 0;
 
 
 		// Check the nonce and action
@@ -431,11 +435,11 @@ class AjaxApiController extends Controller
 	public function count_payment_method_ratio()
 	{
 		// Query completed orders
-		$args = array(
+		$args = [
 			'post_type' => 'shop_order',
 			'posts_per_page' => -1,
 			'post_status' => 'wc-completed', // Filter by completed orders
-		);
+		];
 
 		$completed_orders = get_posts( $args );
 
@@ -472,13 +476,13 @@ class AjaxApiController extends Controller
 			}
 		}
 
-		$direct_bank_transfer_ration = $payment_method_counts['bacs'] / $total_order_count * 100;
-		$check_payment_ration = $payment_method_counts['cheque'] / $total_order_count * 100;
-		$cash_on_delivery_ration = $payment_method_counts['cod'] / $total_order_count * 100;
+		$direct_bank_transfer_ration = 0 != $total_order_count ? $payment_method_counts['bacs'] / $total_order_count * 100 : 0;
+		$check_payment_ration = 0 != $total_order_count ? $payment_method_counts['cheque'] / $total_order_count * 100 : 0;
+		$cash_on_delivery_ration = 0 != $total_order_count ? $payment_method_counts['cod'] / $total_order_count * 100 : 0;
 
-		$local_pickup_ratio = $shipping_method_counts['Local pickup'] / $total_order_count * 100;
-		$flat_rate_ratio = $shipping_method_counts['Flat rate'] / $total_order_count * 100;
-		$free_shipping_ratio = $shipping_method_counts['Free shipping'] / $total_order_count * 100;
+		$local_pickup_ratio = 0 != $total_order_count ? $shipping_method_counts['Local pickup'] / $total_order_count * 100 : 0;
+		$flat_rate_ratio = 0 != $total_order_count ? $shipping_method_counts['Flat rate'] / $total_order_count * 100 : 0;
+		$free_shipping_ratio = 0 != $total_order_count ? $shipping_method_counts['Free shipping'] / $total_order_count * 100 : 0;
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
@@ -527,10 +531,10 @@ class AjaxApiController extends Controller
 			$start_date = strtotime( $twelve_months_ago );
 
 			// Initialize an array for all months in the year
-			$all_months = array(
+			$all_months = [
 				'January', 'February', 'March', 'April', 'May', 'June',
 				'July', 'August', 'September', 'October', 'November', 'December'
-			);
+			];
 
 			// Iterate over all months and initialize them with 0 sales for the top product
 			foreach ( $all_months as $month_name ) {
@@ -543,15 +547,15 @@ class AjaxApiController extends Controller
 				$month_end_date = date('Y-m-t', $current_month);
 
 				// Get all completed orders for the current month
-				$args = array(
+				$args = [
 					'post_type' => 'shop_order',
 					'post_status' => 'wc-completed',
-					'date_query' => array(
+					'date_query' => [
 						'after' => $month_start_date,
 						'before' => $month_end_date,
-					),
+					],
 					'posts_per_page' => -1,
-				);
+				];
 
 				$orders = get_posts( $args );
 
@@ -646,10 +650,10 @@ class AjaxApiController extends Controller
 			$start_date = strtotime( $twelve_months_ago );
 
 			// Initialize an array for all months in the year
-			$all_months = array(
+			$all_months = [
 				'January', 'February', 'March', 'April', 'May', 'June',
 				'July', 'August', 'September', 'October', 'November', 'December'
-			);
+			];
 
 			// Iterate over all months and initialize them with 0 sales for the top product
 			foreach ( $all_months as $month_name ) {
@@ -662,15 +666,15 @@ class AjaxApiController extends Controller
 				$month_end_date = date( 'Y-m-t', $current_month );
 
 				// Get all completed orders for the current month
-				$args = array(
+				$args = [
 					'post_type' => 'shop_order',
 					'post_status' => 'wc-completed',
-					'date_query' => array(
+					'date_query' => [
 						'after' => $month_start_date,
 						'before' => $month_end_date,
-					),
+					],
 					'posts_per_page' => -1,
-				);
+				];
 
 				$orders = get_posts( $args );
 
@@ -754,13 +758,13 @@ class AjaxApiController extends Controller
 
 		if ( class_exists( 'WooCommerce' ) ) {
 			// Query to get the top-selling products
-			$args = array(
+			$args = [
 				'post_type' => 'product',
 				'posts_per_page' => 2,
 				'orderby' => 'meta_value_num',
 				'meta_key' => 'total_sales',
 				'order' => 'DESC',
-			);
+			];
 
 			$topProducts = new \WP_Query($args);
 
@@ -770,6 +774,9 @@ class AjaxApiController extends Controller
 			}
 		}
 
+		$firstProductName = ! empty( $arr[0] ) ? $arr[0] : '';
+		$secondProductName = ! empty( $arr[1] ) ? $arr[1] : '';
+
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
 			// Nonce is valid, proceed with your code
@@ -777,8 +784,8 @@ class AjaxApiController extends Controller
 				// Response data here
 				'msg' => __('hello'),
 				'type' => 'success',
-				'firstTopSellingProductName' => __( $arr[0] ),
-				'secondTopSellingProductName' => __( $arr[1] ),
+				'firstTopSellingProductName' => __( $firstProductName ),
+				'secondTopSellingProductName' => __( $secondProductName ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -905,7 +912,8 @@ class AjaxApiController extends Controller
 	 * @return void
 	 * Get the first top-selling product categories names.
 	 */
-	public function get_top_two_selling_categories_names() {
+	public function get_top_two_selling_categories_names()
+	{
 		// Get the top two selling product categories
 		$top_categories = [];
 
@@ -952,6 +960,9 @@ class AjaxApiController extends Controller
 		// Restore the original post data
 		wp_reset_postdata();
 
+		$firstCatName = ! empty( $top_categories[0] ) ? $top_categories[0] : '';
+		$secondCatName = ! empty( $top_categories[1] ) ? $top_categories[1] : '';
+
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
 			// Nonce is valid, proceed with your code
@@ -959,8 +970,8 @@ class AjaxApiController extends Controller
 				// Response data here
 				'msg' => __('hello'),
 				'type' => 'success',
-				'firstCatName' => __( $top_categories[0] ),
-				'secondCatName' => __( $top_categories[1] ),
+				'firstCatName' => __( $firstCatName ),
+				'secondCatName' => __( $secondCatName ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -978,27 +989,28 @@ class AjaxApiController extends Controller
 	 * @return void
 	 * Get the first top-selling product categories names.
 	 */
-	public function get_top_two_categories_monthly_data() {
-		$completed_orders = wc_get_orders(array(
+	public function get_top_two_categories_monthly_data()
+	{
+		$completed_orders = wc_get_orders( [
 			'status' => 'completed',
-		));
+		] );
 
 		// Initialize arrays to store data for the top two categories
-		$top_selling_category_data = array();
-		$second_top_selling_category_data = array();
+		$top_selling_category_data = [];
+		$second_top_selling_category_data = [];
 
 		// Initialize an array to count month-wise sales for categories
-		$monthly_category_sales = array();
+		$monthly_category_sales = [];
 
-		foreach ($completed_orders as $order) {
-			foreach ($order->get_items() as $item) {
+		foreach ( $completed_orders as $order ) {
+			foreach ( $order->get_items() as $item ) {
 				$product = $item->get_product();
-				$categories = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
+				$categories = wp_get_post_terms( $product->get_id(), 'product_cat', [ 'fields' => 'names' ] );
 
-				foreach ($categories as $category) {
-					$month = date('F', strtotime($order->get_date_completed()->format('Y-m-d H:i:s')));
+				foreach ( $categories as $category ) {
+					$month = date( 'F', strtotime( $order->get_date_completed()->format( 'Y-m-d H:i:s' ) ) );
 
-					if (!isset($monthly_category_sales[$category][$month])) {
+					if ( !isset( $monthly_category_sales[$category][$month] ) ) {
 						$monthly_category_sales[$category][$month] = 0;
 					}
 					$monthly_category_sales[$category][$month] += $item->get_quantity();
@@ -1007,44 +1019,44 @@ class AjaxApiController extends Controller
 		}
 
 		// Sort categories by total sales
-		arsort($monthly_category_sales);
+		arsort( $monthly_category_sales );
 
 		// Get the top two selling categories
-		$top_categories = array_keys($monthly_category_sales);
+		$top_categories = array_keys( $monthly_category_sales );
 
-		if (isset($top_categories[0])) {
+		if ( isset( $top_categories[0] ) ) {
 			$top_category_data = $monthly_category_sales[$top_categories[0]];
 		} else {
-			$top_category_data = array();
+			$top_category_data = [];
 		}
 
 		if (isset($top_categories[1])) {
 			$second_top_category_data = $monthly_category_sales[$top_categories[1]];
 		} else {
-			$second_top_category_data = array();
+			$second_top_category_data = [];
 		}
 
 		// Create an array of month names
-		$months = array(
+		$months = [
 			'January', 'February', 'March', 'April', 'May', 'June',
 			'July', 'August', 'September', 'October', 'November', 'December'
-		);
+		];
 
 		// Create arrays for the top two selling categories
-		foreach ($top_categories as $category) {
-			if ($category === $top_categories[0]) {
-				$top_selling_category_data[$category] = array();
-				foreach ($months as $month) {
-					if (isset($top_category_data[$month])) {
+		foreach ( $top_categories as $category ) {
+			if ( $category === $top_categories[0] ) {
+				$top_selling_category_data[$category] = [];
+				foreach ( $months as $month ) {
+					if ( isset( $top_category_data[$month] ) ) {
 						$top_selling_category_data[$category][$month] = $top_category_data[$month];
 					} else {
 						$top_selling_category_data[$category][$month] = 0;
 					}
 				}
-			} elseif ($category === $top_categories[1]) {
-				$second_top_selling_category_data[$category] = array();
-				foreach ($months as $month) {
-					if (isset($second_top_category_data[$month])) {
+			} elseif ( $category === $top_categories[1] ) {
+				$second_top_selling_category_data[$category] = [];
+				foreach ( $months as $month ) {
+					if ( isset( $second_top_category_data[$month] ) ) {
 						$second_top_selling_category_data[$category][$month] = $second_top_category_data[$month];
 					} else {
 						$second_top_selling_category_data[$category][$month] = 0;
