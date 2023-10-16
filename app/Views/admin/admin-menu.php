@@ -1478,78 +1478,617 @@ use CodesVault\Howdyqb\DB;
 //var_dump($category_sales_ratio);
 
 
-// Initialize arrays to store category names and sales count
-$product_names = array();
-$product_sales = array();
-$category_names = array();
-$category_sales = array();
-$total_order_count = 0; // Initialize the order count
+//// Initialize arrays to store category names and sales count
+//$product_names = array();
+//$product_sales = array();
+//$category_names = array();
+//$category_sales = array();
+//$total_order_count = 0; // Initialize the order count
+//
+//// Set the number of categories to retrieve (top 10)
+//$limit = 10;
+//
+//// Get completed orders
+//$completed_orders = wc_get_orders(array(
+//	'status' => 'completed',
+//));
+//
+//// Iterate through completed orders
+//foreach ($completed_orders as $order) {
+//	$total_order_count++; // Increment the order count
+//
+//	$order_items = $order->get_items();
+//
+//	foreach ($order_items as $item) {
+//		$product_id = $item->get_product_id();
+//		$product = wc_get_product($product_id);
+//		$product_categories = $product->get_category_ids();
+//		$product_name = $product->get_name(); // Get the product name
+//
+//		if (array_key_exists($product_name, $product_sales)) {
+//			$product_sales[$product_name] += $item->get_quantity();
+//		} else {
+//			$product_sales[$product_name] = $item->get_quantity();
+//		}
+//
+//		foreach ($product_categories as $category_id) {
+//			$category_name = get_term($category_id, 'product_cat')->name;
+//
+//			if (array_key_exists($category_name, $category_sales)) {
+//				$category_sales[$category_name] += $item->get_quantity();
+//			} else {
+//				$category_sales[$category_name] = $item->get_quantity();
+//			}
+//		}
+//	}
+//}
+//
+//// Sort products by sales count in descending order
+//arsort($product_sales);
+//
+//// Limit to the top 10 products
+//$product_sales = array_slice($product_sales, 0, $limit, true);
+//
+//// Populate the arrays
+//$product_names = array_keys($product_sales);
+//$product_sales = array_values($product_sales);
+//
+//// Sort categories by sales count in descending order
+//arsort($category_sales);
+//
+//// Limit to the top 10 categories
+//$category_sales = array_slice($category_sales, 0, $limit, true);
+//
+//// Populate the arrays
+//$category_names = array_keys($category_sales);
+//$category_sales = array_values($category_sales);
+//
+//$category_sales_ratio = [];
+//
+//foreach ( $category_sales as $single_item ) {
+//	$category_sales_ratio[] = $single_item / $total_order_count * 100;
+//}
+//
+//
+//var_dump($product_names);
+//
+//var_dump($product_sales);
 
-// Set the number of categories to retrieve (top 10)
-$limit = 10;
 
-// Get completed orders
+
+//// Get the top two selling product categories
+//$top_categories = array();
+//
+//// Query to get product categories and their total sales
+//$args = array(
+//	'post_type' => 'product',
+//	'posts_per_page' => -1,
+//);
+//
+//$query = new WP_Query($args);
+//
+//if ($query->have_posts()) {
+//	$category_sales = array();
+//
+//	while ($query->have_posts()) {
+//		$query->the_post();
+//		global $product;
+//
+//		// Get product categories for the current product
+//		$product_categories = wp_get_post_terms(get_the_ID(), 'product_cat');
+//
+//		foreach ($product_categories as $category) {
+//			$category_name = $category->name;
+//
+//			// Calculate total sales for the category
+//			$total_sales = $product->get_total_sales();
+//
+//			// Update or initialize the total sales for the category
+//			if (isset($category_sales[$category_name])) {
+//				$category_sales[$category_name] += $total_sales;
+//			} else {
+//				$category_sales[$category_name] = $total_sales;
+//			}
+//		}
+//	}
+//
+//	// Sort the categories by total sales in descending order
+//	arsort($category_sales);
+//
+//	// Get the top two categories
+//	$top_categories = array_slice(array_keys($category_sales), 0, 2);
+//}
+//
+//// Restore the original post data
+//wp_reset_postdata();
+
+
+//// Replace with your WooCommerce API credentials and URL
+//$months = array(
+//	'01' => 'January',
+//	'02' => 'February',
+//	'03' => 'March',
+//	'04' => 'April',
+//	'05' => 'May',
+//	'06' => 'June',
+//	'07' => 'July',
+//	'08' => 'August',
+//	'09' => 'September',
+//	'10' => 'October',
+//	'11' => 'November',
+//	'12' => 'December',
+//);
+//
+//$top_categories_data = array();
+//
+//
+//
+//// Now $top_categories_data contains the top-selling category for each month
+//
+//// Get all completed sales information (orders) from WooCommerce
+//$args = array(
+//	'post_type'      => 'shop_order',
+//	'post_status'    => 'wc-completed',
+//	'posts_per_page' => -1,
+//);
+//
+//$orders = new WP_Query($args);
+//
+//// Initialize an array to store category counts
+//$category_counts = array();
+//
+//// Loop through the completed orders
+//if ($orders->have_posts()) {
+//	while ($orders->have_posts()) {
+//		$orders->the_post();
+//		$order = wc_get_order(get_the_ID());
+//
+//		// Iterate through order items to count categories
+//		foreach ($order->get_items() as $item) {
+//			$product = $item->get_product();
+//			$categories = $product->get_category_ids();
+//			foreach ($categories as $category_id) {
+//				if (isset($category_counts[$category_id])) {
+//					$category_counts[$category_id] += $item->get_quantity();
+//				} else {
+//					$category_counts[$category_id] = $item->get_quantity();
+//				}
+//			}
+//		}
+//	}
+//}
+//
+//// Find the top two categories
+//arsort($category_counts);
+//$top_categories = array_slice($category_counts, 0, 2);
+//
+//// Initialize an array to store data for each month
+//$monthly_data = array();
+//
+//foreach ($months as $month => $month_name) {
+//	$monthly_data[$month_name] = array(
+//		'category_1' => 0,
+//		'category_2' => 0,
+//	);
+//}
+//
+//// Loop through the completed orders again to count sales for the top categories
+//if ($orders->have_posts()) {
+//	while ($orders->have_posts()) {
+//		$orders->the_post();
+//		$order = wc_get_order(get_the_ID());
+//
+//		$order_month = date('m', strtotime($order->get_date_created()));
+//
+//		foreach ($order->get_items() as $item) {
+//			$product = $item->get_product();
+//			$categories = $product->get_category_ids();
+//			foreach ($categories as $category_id) {
+//				if (in_array($category_id, array_keys($top_categories))) {
+//					$monthly_data[$months[$order_month]]['category_' . array_search($category_id, array_keys($top_categories)) + 1] += $item->get_quantity();
+//				}
+//			}
+//		}
+//	}
+//}
+//
+//// Reset the query
+//wp_reset_postdata();
+//
+//// Now $monthly_data contains the total sales for the top two categories for each month
+//
+//print_r($monthly_data);
+
+
+//$completed_orders = wc_get_orders( array(
+//	'status' => 'completed',
+//) );
+//
+//$product_categories = array();
+//
+//foreach ( $completed_orders as $order ) {
+//	foreach ( $order->get_items() as $item_id => $item ) {
+//		$product_id = $item->get_product_id();
+//
+//		// Get product categories as an array of term objects
+//		$product_terms = wp_get_post_terms( $product_id, 'product_cat' );
+//
+//		// Extract category names and add them to the array
+//		$category_names = wp_list_pluck( $product_terms, 'name' );
+//
+//		$product_categories[] = $category_names;
+//	}
+//}
+//echo '<pre>';
+//var_dump($product_categories);
+//echo '</pre>';
+
+// Now, $product_categories array contains the category names of products in completed orders.
+
+
+//$completed_orders = wc_get_orders( array(
+//	'status' => 'completed',
+//) );
+//
+//$monthly_category_sales = array();
+//
+//foreach ( $completed_orders as $order ) {
+//	$order_month = date('m', strtotime($order->get_date_created()));
+//
+//	foreach ( $order->get_items() as $item_id => $item ) {
+//		$product_id = $item->get_product_id();
+//
+//		// Get product categories as an array of term objects
+//		$product_terms = wp_get_post_terms( $product_id, 'product_cat' );
+//
+//		// Extract category names
+//		$category_names = wp_list_pluck( $product_terms, 'name' );
+//
+//		// Add category sales data to the array
+//		foreach ($category_names as $category_name) {
+//			if (!isset($monthly_category_sales[$order_month][$category_name])) {
+//				$monthly_category_sales[$order_month][$category_name] = 0;
+//			}
+//
+//			$monthly_category_sales[$order_month][$category_name] += $item->get_quantity();
+//		}
+//	}
+//}
+//
+//var_dump($monthly_category_sales);
+//
+//// Now, $monthly_category_sales contains the category sales for each month.
+
+
+//$completed_orders = wc_get_orders( array(
+//	'status' => 'completed',
+//) );
+//
+//$order_completion_dates = array();
+//
+//foreach ( $completed_orders as $order ) {
+//	$order_completion_date = $order->get_date_completed();
+//	if ( $order_completion_date ) {
+//		$order_completion_dates[] = $order_completion_date->format( 'Y-m-d H:i:s' );
+//	}
+//}
+//
+//var_dump($order_completion_dates);
+
+// Now, $order_completion_dates array contains the completion date and time of each completed order.
+
+//$completed_orders = wc_get_orders( array(
+//	'status' => 'completed',
+//) );
+//
+//$product_info = array();
+//
+//foreach ( $completed_orders as $order ) {
+//	$order_completion_date = $order->get_date_completed();
+//	$timestamp = strtotime( $order_completion_date->format( 'Y-m-d H:i:s' ) );
+//
+//	$month_name = date( "F", $timestamp );
+//
+//	if ( $order_completion_date ) {
+//		foreach ( $order->get_items() as $item_id => $item ) {
+//			$product_id = $item->get_product_id();
+//			$product_name = $item->get_name();
+//
+//			// Get product categories as an array of term objects
+//			$product_terms = wp_get_post_terms( $product_id, 'product_cat' );
+//
+//			// Extract category names
+//			$category_names = wp_list_pluck( $product_terms, 'name' );
+//
+//			// Store product information
+//			foreach ($category_names as $category_name) {
+//				$product_info[] = array(
+//					'product_name' => $product_name,
+//					'category_name' => $category_name,
+//					'completion_date' => $month_name,
+//				);
+//			}
+//		}
+//	}
+//}
+//
+//echo '<pre>';
+//var_dump($product_info);
+//echo '</pre>';
+// Now, $product_info array contains product name, category, and order completion date for each product in completed orders.
+
+//$month_counts = array();
+//
+//foreach ($product_info as $product) {
+//	$completion_date = $product['completion_date'];
+//
+//	if (array_key_exists($completion_date, $month_counts)) {
+//		$month_counts[$completion_date]++;
+//	} else {
+//		$month_counts[$completion_date] = 1;
+//	}
+//}
+//
+//var_dump($month_counts);
+
+//$completed_orders = wc_get_orders(array(
+//	'status' => 'completed',
+//));
+//
+//$product_info = array();
+//
+//foreach ($completed_orders as $order) {
+//	$order_completion_date = $order->get_date_completed();
+//	$timestamp = strtotime($order_completion_date->format('Y-m-d H:i:s'));
+//
+//	$month_name = date("F", $timestamp);
+//
+//	if ($order_completion_date) {
+//		foreach ($order->get_items() as $item_id => $item) {
+//			$product_id = $item->get_product_id();
+//			$product_name = $item->get_name();
+//
+//			// Get product categories as an array of term objects
+//			$product_terms = wp_get_post_terms($product_id, 'product_cat');
+//
+//			// Extract category names
+//			$category_names = wp_list_pluck($product_terms, 'name');
+//
+//			// Store product information
+//			foreach ($category_names as $category_name) {
+//				$product_info[] = array(
+//					'product_name' => $product_name,
+//					'category_name' => $category_name,
+//					'completion_date' => $month_name,
+//				);
+//			}
+//		}
+//	}
+//}
+////var_dump($product_info);
+//
+//// Count the occurrences of each month
+//$month_counts = array();
+//
+//foreach ($product_info as $product) {
+//	$completion_date = $product['completion_date'];
+//
+//	if (array_key_exists($completion_date, $month_counts)) {
+//		$month_counts[$completion_date]++;
+//	} else {
+//		$month_counts[$completion_date] = 1;
+//	}
+//
+//	// Get the top two most occurred categories
+//	$category_counts = array();
+//	foreach ($product_info as $product) {
+//		$category_name = $product['category_name'];
+//		if (array_key_exists($category_name, $category_counts)) {
+//			$category_counts[$category_name]++;
+//		} else {
+//			$category_counts[$category_name] = 1;
+//		}
+//	}
+//
+//	arsort($category_counts);
+//	$top_two_categories = array_slice($category_counts, 0, 2);
+//}
+//
+//
+//
+//// Save the data for the top two categories
+//$top_category_data = array();
+//foreach ($top_two_categories as $category_name => $count) {
+//	$top_category_data[$category_name] = array();
+//}
+//
+//
+//
+//foreach ($product_info as $product) {
+//	$category_name = $product['category_name'];
+//	if (array_key_exists($category_name, $top_category_data)) {
+//		$month = $product['completion_date'];
+//		if (!isset($top_category_data[$category_name][$month])) {
+//			$top_category_data[$category_name][$month] = 1;
+//		} else {
+//			$top_category_data[$category_name][$month]++;
+//		}
+//	}
+//}
+//
+//// Now, $top_category_data contains the month-wise count of the top two most occurred categories.
+//echo '<pre>';
+//var_dump($top_category_data);
+//echo '</pre>';
+
+
+
+//==================================
+//$completed_orders = wc_get_orders(array(
+//	'status' => 'completed',
+//));
+//
+//// Initialize arrays to store data
+//$top_selling_category_data = array();
+//$second_top_selling_category_data = array();
+//
+//// Initialize an array to count month-wise sales for categories
+//$monthly_category_sales = array();
+//
+//foreach ($completed_orders as $order) {
+//	foreach ($order->get_items() as $item) {
+//		$product = $item->get_product();
+//		$categories = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
+//
+//		foreach ($categories as $category) {
+//			$month = date('F', strtotime($order->get_date_completed()->format('Y-m-d H:i:s')));
+//
+//			if (!isset($monthly_category_sales[$category][$month])) {
+//				$monthly_category_sales[$category][$month] = 0;
+//			}
+//			$monthly_category_sales[$category][$month] += $item->get_quantity();
+//		}
+//	}
+//}
+//
+//// Sort categories by total sales
+//arsort($monthly_category_sales);
+//
+//// Get the top two selling categories
+//$top_categories = array_keys($monthly_category_sales);
+//$top_category_data = $monthly_category_sales[$top_categories[0]];
+//$second_top_category_data = $monthly_category_sales[$top_categories[1]];
+//
+//// Create an array of month names
+//$months = array(
+//	'January', 'February', 'March', 'April', 'May', 'June',
+//	'July', 'August', 'September', 'October', 'November', 'December'
+//);
+//
+//// Create arrays for the top two selling categories
+//foreach ($top_categories as $category) {
+//	$top_selling_category_data[$category] = array();
+//	$second_top_selling_category_data[$category] = array();
+//
+//	foreach ($months as $month) {
+//		if (isset($top_category_data[$month])) {
+//			$top_selling_category_data[$category][$month] = $top_category_data[$month];
+//		} else {
+//			$top_selling_category_data[$category][$month] = 0;
+//		}
+//
+//		if (isset($second_top_category_data[$month])) {
+//			$second_top_selling_category_data[$category][$month] = $second_top_category_data[$month];
+//		} else {
+//			$second_top_selling_category_data[$category][$month] = 0;
+//		}
+//	}
+//}
+//
+//// Now, $top_selling_category_data contains the month-wise counts of the top-selling categories,
+//// and $second_top_selling_category_data contains the month-wise counts of the second top-selling categories.
+//
+//echo '<pre>';
+//var_dump($second_top_selling_category_data);
+//echo '</pre>';
+//
+////echo '<pre>';
+////var_dump($second_top_selling_category_data);
+////echo '</pre>';
+///
+
+//	=====================================
 $completed_orders = wc_get_orders(array(
 	'status' => 'completed',
 ));
 
-// Iterate through completed orders
+// Initialize arrays to store data for the top two categories
+$top_selling_category_data = array();
+$second_top_selling_category_data = array();
+
+// Initialize an array to count month-wise sales for categories
+$monthly_category_sales = array();
+
 foreach ($completed_orders as $order) {
-	$total_order_count++; // Increment the order count
+	foreach ($order->get_items() as $item) {
+		$product = $item->get_product();
+		$categories = wp_get_post_terms($product->get_id(), 'product_cat', array('fields' => 'names'));
 
-	$order_items = $order->get_items();
+		foreach ($categories as $category) {
+			$month = date('F', strtotime($order->get_date_completed()->format('Y-m-d H:i:s')));
 
-	foreach ($order_items as $item) {
-		$product_id = $item->get_product_id();
-		$product = wc_get_product($product_id);
-		$product_categories = $product->get_category_ids();
-		$product_name = $product->get_name(); // Get the product name
-
-		if (array_key_exists($product_name, $product_sales)) {
-			$product_sales[$product_name] += $item->get_quantity();
-		} else {
-			$product_sales[$product_name] = $item->get_quantity();
+			if (!isset($monthly_category_sales[$category][$month])) {
+				$monthly_category_sales[$category][$month] = 0;
+			}
+			$monthly_category_sales[$category][$month] += $item->get_quantity();
 		}
+	}
+}
 
-		foreach ($product_categories as $category_id) {
-			$category_name = get_term($category_id, 'product_cat')->name;
+// Sort categories by total sales
+arsort($monthly_category_sales);
 
-			if (array_key_exists($category_name, $category_sales)) {
-				$category_sales[$category_name] += $item->get_quantity();
+// Get the top two selling categories
+$top_categories = array_keys($monthly_category_sales);
+
+if (isset($top_categories[0])) {
+	$top_category_data = $monthly_category_sales[$top_categories[0]];
+} else {
+	$top_category_data = array();
+}
+
+if (isset($top_categories[1])) {
+	$second_top_category_data = $monthly_category_sales[$top_categories[1]];
+} else {
+	$second_top_category_data = array();
+}
+
+// Create an array of month names
+$months = array(
+	'January', 'February', 'March', 'April', 'May', 'June',
+	'July', 'August', 'September', 'October', 'November', 'December'
+);
+
+// Create arrays for the top two selling categories
+foreach ($top_categories as $category) {
+	if ($category === $top_categories[0]) {
+		$top_selling_category_data[$category] = array();
+		foreach ($months as $month) {
+			if (isset($top_category_data[$month])) {
+				$top_selling_category_data[$category][$month] = $top_category_data[$month];
 			} else {
-				$category_sales[$category_name] = $item->get_quantity();
+				$top_selling_category_data[$category][$month] = 0;
+			}
+		}
+	} elseif ($category === $top_categories[1]) {
+		$second_top_selling_category_data[$category] = array();
+		foreach ($months as $month) {
+			if (isset($second_top_category_data[$month])) {
+				$second_top_selling_category_data[$category][$month] = $second_top_category_data[$month];
+			} else {
+				$second_top_selling_category_data[$category][$month] = 0;
 			}
 		}
 	}
 }
 
-// Sort products by sales count in descending order
-arsort($product_sales);
+// Now, $top_selling_category_data contains data for the top-selling category, and
+// $second_top_selling_category_data contains data for the second top-selling category.
 
-// Limit to the top 10 products
-$product_sales = array_slice($product_sales, 0, $limit, true);
+//var_dump($top_selling_category_data);
+//var_dump($second_top_selling_category_data);
 
-// Populate the arrays
-$product_names = array_keys($product_sales);
-$product_sales = array_values($product_sales);
+$final_data_1 = [];
+$final_data_2 = [];
 
-// Sort categories by sales count in descending order
-arsort($category_sales);
-
-// Limit to the top 10 categories
-$category_sales = array_slice($category_sales, 0, $limit, true);
-
-// Populate the arrays
-$category_names = array_keys($category_sales);
-$category_sales = array_values($category_sales);
-
-$category_sales_ratio = [];
-
-foreach ( $category_sales as $single_item ) {
-	$category_sales_ratio[] = $single_item / $total_order_count * 100;
+foreach ( $top_selling_category_data as $key ) {
+	foreach( $key as $sinlge_value ) {
+		$final_data_1[] = $sinlge_value;
+	}
 }
-
-
-var_dump($product_names);
-
-var_dump($product_sales);
+var_dump($final_data_1);
+foreach ( $second_top_selling_category_data as $key ) {
+	foreach( $key as $sinlge_value ) {
+		$final_data_2[] = $sinlge_value;
+	}
+}

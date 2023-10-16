@@ -10,6 +10,7 @@ import BarChart from "../../components/charts/BarChart.jsx";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { __ } from '@wordpress/i18n';
+import {data} from "autoprefixer";
 
 
 
@@ -19,6 +20,12 @@ export default function ByProduct(){
 	const [topSellingProductsNames, setTopSellingProductsNames] = useState([]);
 	const [topSellingProductsCount, setTopSellingProductsCount] = useState([]);
 	const [productSaleRatio, setProductSaleRatio] = useState([]);
+
+	const [topFirstSellingProductMonthlyData, setTopFirstSellingProductMonthlyData] = useState([])
+	const [topSecondSellingProductMonthlyData, setTopSecondSellingProductMonthlyData] = useState([])
+
+	const [topFirstSellingProductName, setTopFirstSellingProductName] = useState([])
+	const [topSecondSellingProductName, setTopSecondSellingProductName] = useState([])
 
 	useEffect(() => {
 		axios
@@ -44,6 +51,75 @@ export default function ByProduct(){
 			});
 
 	}, []);
+
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'show_first_top_selling_product_monthly_data',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTopFirstSellingProductMonthlyData(data.firstTopSellingProductMonthlyData)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'get_second_top_product_monthly_data',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTopSecondSellingProductMonthlyData(data.secondTopSellingProductMonthlyData)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'get_top_two_selling_product_name',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTopFirstSellingProductName(data.firstTopSellingProductName)
+					setTopSecondSellingProductName(data.secondTopSellingProductName)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+
 
 	const cardListItems = topSellingProductsNames.map((name, index) => ({
 		title: name,
@@ -79,6 +155,11 @@ export default function ByProduct(){
 		],
 	};
 
+	const label1 = topFirstSellingProductName;
+	const label2 = topSecondSellingProductName;
+	const data1 = topFirstSellingProductMonthlyData;
+	const data2 = topSecondSellingProductMonthlyData;
+
     return (
         <PageLayout pageTitle="Sales By Product">
             <Card padd="0">
@@ -98,7 +179,7 @@ export default function ByProduct(){
                 </Container>
             </Card>
             <Card extraClass="margin-top-20">
-                <BarChart title={__("Sales By Product","hexreport")}/>
+				<BarChart title={__("Sales By Product","hexreport")} label1={label1} label2={label2} data1={data1} data2={data2}/>
             </Card>
         </PageLayout>
     );

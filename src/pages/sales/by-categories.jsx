@@ -20,6 +20,9 @@ export default function ByCategories(){
 	const [topSellingCategoriesCount, setTopSellingCategoriesCount] = useState([]);
 	const [categoriesSaleRatio, setCategoriesSaleRatio] = useState([]);
 
+	const [topFirstSellingCategoryName, setTopFirstSellingCategoryName] = useState([]);
+	const [topSecondSellingCategoryName, setTopSecondSellingCategoryName] = useState([]);
+
 	useEffect(() => {
 		axios
 			.get(ajaxUrl, {
@@ -36,6 +39,29 @@ export default function ByCategories(){
 					setTopSellingCategoriesNames(data.topSellingCategoreisNames)
 					setTopSellingCategoriesCount(data.topSellingCategoreisCount)
 					setCategoriesSaleRatio(data.categoriesSalesRatio)
+				}
+				// Handle the response data
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+	}, []);
+	useEffect(() => {
+		axios
+			.get(ajaxUrl, {
+				params: {
+					nonce: nonce,
+					action: 'get_top_two_selling_categories_names',
+				},
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then(({data}) => {
+				if (data) {
+					setTopFirstSellingCategoryName(data.firstCatName)
+					setTopSecondSellingCategoryName(data.secondCatName)
 				}
 				// Handle the response data
 			})
@@ -79,8 +105,13 @@ export default function ByCategories(){
 		],
 	};
 
+	const label1 = topFirstSellingCategoryName;
+	const label2 = topSecondSellingCategoryName;
+	const data1 = [10, 20, 30, 40, 50, 50, 50, 50, 50, 50, 50, 50];
+	const data2 = [5, 15, 25, 35, 45, 45, 45, 45, 45, 45, 45, 45];
+
 	return (
-		<PageLayout pageTitle="Sales By Categories">
+	<PageLayout pageTitle="Sales By Categories">
 			<Card padd="0">
 				<PageHeader pageTitle={__("Sales By Categories","hexreport")} extraClass="padding-20 padding-bottom-0"/>
 				<div className="commonFilterWrap pb0">
@@ -98,7 +129,7 @@ export default function ByCategories(){
 				</Container>
 			</Card>
 			<Card extraClass="margin-top-20">
-				<BarChart title={__("Sales By Categories","hexreport")}/>
+				<BarChart title={__("Sales By Categories","hexreport")} label1={label1} label2={label2} data1={data1} data2={data2}/>
 			</Card>
 		</PageLayout>
 	);
