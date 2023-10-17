@@ -129,16 +129,16 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'totalSales' => __( $total_completed_sales ),
-				'totalCancelledAmount' => __( $total_cancelled_sales ),
-				'totalOrdersAmount' => __( $total_orders ),
-				'totalRefundedAmount' => __( $total_refunded_sales ),
-				'topSellingProductName' => __( $top_selling_product_name ),
-				'topSellingProductPrice' => __( $top_product_price ),
-				'topSellingCatName' => __( $top_selling_cat_name ),
-				'topSellingCatPrice' => __( $top_selling_cat_amount ),
+				'totalSales' => sprintf( __( '%s', 'hexreport' ), esc_html( $total_completed_sales ) ),
+				'totalCancelledAmount' => sprintf( __( '%s', 'hexreport' ), esc_html( $total_cancelled_sales ) ),
+				'totalOrdersAmount' => __( $total_orders, 'hexreport' ),
+				'totalRefundedAmount' => sprintf( __( '%s', 'hexreport' ), esc_html( $total_refunded_sales ) ),
+				'topSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_selling_product_name ) ),
+				'topSellingProductPrice' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_product_price ) ),
+				'topSellingCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_selling_cat_name ) ),
+				'topSellingCatPrice' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_selling_cat_amount ) ),
 
 			], 200);
 		} else {
@@ -213,9 +213,9 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'totalSalesOfYear' => __( $monthly_completed_sales ),
+				'totalSalesOfYear' => __( $monthly_completed_sales, 'hexreport' ),
 
 			], 200);
 		} else {
@@ -249,9 +249,9 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'totalVisitorsCount' => __( $totalVisitorsCount ),
+				'totalVisitorsCount' => __( $totalVisitorsCount, 'hexreport' ),
 
 			], 200);
 		} else {
@@ -338,11 +338,11 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'totalCompletedOredersFromJanToApr' => __( $total_amount_jan_apr ),
-				'totalCompletedOredersFromMayToAug' => __( $total_amount_may_aug ),
-				'totalCompletedOredersFromSepToDec' => __( $total_amount_sep_dec ),
+				'totalCompletedOredersFromJanToApr' => __( $total_amount_jan_apr, 'hexreport' ),
+				'totalCompletedOredersFromMayToAug' => __( $total_amount_may_aug, 'hexreport' ),
+				'totalCompletedOredersFromSepToDec' => __( $total_amount_sep_dec, 'hexreport' ),
 
 			], 200);
 		} else {
@@ -409,11 +409,11 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello', 'hexreport'),
 				'type' => 'success',
-				'cancelledOrderRation' => __( $cancelled_order_ratio ),
-				'refundedOrderRation' => __( $refunded_order_ration ),
-				'failedOrderRation' => __( $failed_order_ration ),
+				'cancelledOrderRation' => __( $cancelled_order_ratio, 'hexreport' ),
+				'refundedOrderRation' => __( $refunded_order_ration, 'hexreport' ),
+				'failedOrderRation' => __( $failed_order_ration, 'hexreport' ),
 
 			], 200);
 		} else {
@@ -489,14 +489,14 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'bankTransferRation' => __( $direct_bank_transfer_ration ),
-				'checkPaymentRatio' => __( $check_payment_ration ),
-				'cashOnDeliveryRatio' => __( $cash_on_delivery_ration ),
-				'localPickupRatio' => __( $local_pickup_ratio ),
-				'flatRateRatio' => __( $flat_rate_ratio ),
-				'freeShippingRatio' => __( $free_shipping_ratio ),
+				'bankTransferRation' => __( $direct_bank_transfer_ration, 'hexreport' ),
+				'checkPaymentRatio' => __( $check_payment_ration, 'hexreport' ),
+				'cashOnDeliveryRatio' => __( $cash_on_delivery_ration, 'hexreport' ),
+				'localPickupRatio' => __( $local_pickup_ratio, 'hexreport' ),
+				'flatRateRatio' => __( $flat_rate_ratio, 'hexreport' ),
+				'freeShippingRatio' => __( $free_shipping_ratio, 'hexreport' ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -612,9 +612,9 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello', 'hexreport'),
 				'type' => 'success',
-				'firstTopSellingProductMonthlyData' => __( $final_data ),
+				'firstTopSellingProductMonthlyData' => __( $final_data, 'hexreport' ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -732,9 +732,9 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __( 'hello', 'hexreport' ),
 				'type' => 'success',
-				'secondTopSellingProductMonthlyData' => __( $final_data ),
+				'secondTopSellingProductMonthlyData' => __( $final_data, 'hexreport' ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -782,10 +782,10 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello', 'hexreport'),
 				'type' => 'success',
-				'firstTopSellingProductName' => __( $firstProductName ),
-				'secondTopSellingProductName' => __( $secondProductName ),
+				'firstTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $firstProductName ) ),
+				'secondTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $secondProductName ) ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -887,14 +887,14 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello', 'hexreport'),
 				'type' => 'success',
-				'topSellingCategoreisNames' => __( $category_names ),
-				'topSellingCategoreisCount' => __( $category_sales ),
-				'categoriesSalesRatio' => __( $category_sales_ratio ),
-				'topSellingProductsNames' => __( $product_names ),
-				'topSellingProductsCount' => __( $product_sales ),
-				'productSaleRatio' => __( $product_sale_ratio ),
+				'topSellingCategoreisNames' => __( $category_names, 'hexreport' ),
+				'topSellingCategoreisCount' => __( $category_sales, 'hexreport' ),
+				'categoriesSalesRatio' => __( $category_sales_ratio, 'hexreport' ),
+				'topSellingProductsNames' => __( $product_names, 'hexreport' ),
+				'topSellingProductsCount' => __( $product_sales, 'hexreport' ),
+				'productSaleRatio' => __( $product_sale_ratio, 'hexreport' ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -968,10 +968,10 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'firstCatName' => __( $firstCatName ),
-				'secondCatName' => __( $secondCatName ),
+				'firstCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $firstCatName ) ),
+				'secondCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $secondCatName ) ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -1085,10 +1085,10 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello'),
+				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'firstCatMonthData' => __( $final_data_1 ),
-				'secondCatMonthData' => __( $final_data_2 ),
+				'firstCatMonthData' => __( $final_data_1, 'hexreport' ),
+				'secondCatMonthData' => __( $final_data_2, 'hexreport' ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error

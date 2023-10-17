@@ -12,6 +12,6 @@ return [
 	'namaspace_root'	=> 'HexReport',
 	'plugin_version'	=> '1.0.0',
 	'plugin_name'		=> 'HexReport',
-	'dev_mode'			=> true,
+	'dev_mode'			=> false,
 	'root_dir'			=> dirname( __DIR__ ),
 ];
