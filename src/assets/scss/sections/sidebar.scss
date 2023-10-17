@@ -27,6 +27,10 @@
                 opacity: .7;
             }
             li{
+				.active {
+					background: #6B5AF7;
+					color: #ffffff;
+				}
                 +li{
                     margin-top: 2px;
                 }

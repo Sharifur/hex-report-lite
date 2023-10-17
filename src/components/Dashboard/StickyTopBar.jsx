@@ -1,13 +1,9 @@
 import "./../../assets/scss/sections/topbar.scss";
-import MoonIcon from "./../../assets/icons/Moon.svg";
-import notificationIcon from "./../../assets/icons/notification_dot.svg";
-import searchIcon from "./../../assets/icons/Search.svg";
-import {Link} from "react-router-dom";
 import {useState,useEffect,useRef} from "react";
 import menuIcon from "../../assets/icons/Menu.svg"
 import {useSidebar} from "../../context/SidebarContext.jsx";
 
-export default function StickyTopBar({pageTitle}){
+export default function StickyTopBar(){
     const [openDropdown,setOpenDropdown] = useState(false);
     const dropdownRef = useRef(null);
     useEffect(() => {
@@ -27,12 +23,6 @@ export default function StickyTopBar({pageTitle}){
             document.removeEventListener('mousedown', handleDocumentClick);
         };
     }, [openDropdown]);
-
-
-    // const [toggleClass, setToggleClass] = useState("active");
-    // const toggleSidebar = () => {
-    //     setToggleClass(toggleClass === "active" ? "" : "active");
-    // }
 
     const { toggleSidebar, isSidebarActive } = useSidebar();
 

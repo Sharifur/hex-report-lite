@@ -59,6 +59,14 @@ class AdminMenuController extends BaseController
 		);
 	}
 
+	/**
+	 * @package hexreport
+	 * @author WpHex
+	 * @method render_hexreport
+	 * @return mixed
+	 * @since 1.0.0
+	 * Render admin menu page.
+	 */
 	public function render_hexreport()
 	{
 		$this->render( '/admin/admin-menu.php' );

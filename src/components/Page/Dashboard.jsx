@@ -5,8 +5,6 @@ import Card from "../Cards/Card.jsx";
 import DoughnutChart from "../charts/DoughnutChart.jsx";
 import CardList from "../Cards/CardList.jsx";
 import OrderCard from "../OrderCard.jsx";
-import PageHeader from "../Sections/PageHeader.jsx";
-import Select from "../Elements/Select.jsx";
 import axios from "axios";
 import React, {useEffect,useState} from 'react';
 import { __ } from "@wordpress/i18n";
@@ -228,6 +226,12 @@ export default function Dashboard(){
 			},
 		],
 	};
+	const noData = () => {
+		if (0 === localPickupRatio && 0 === flatRateRatio && 0 === freeShippingRatio) {
+			return <h2 className={"no-data"}>{noDataFoundText}</h2>;
+		}
+		return <DoughnutChart labels={doughnutDashboardData.labels} datasets={doughnutDashboardData.datasets}/>;
+	}
 
     return (
         <>
@@ -248,7 +252,7 @@ export default function Dashboard(){
                 <Card>
                     <div className="chartWithListWrapper">
                         <div className="donChart">
-                            <DoughnutChart labels={doughnutDashboardData.labels} datasets={doughnutDashboardData.datasets}/>
+							{noData()}
                         </div>
                         <div className="orderListWrapper">
                             <CardList lists={cardListItems}/>

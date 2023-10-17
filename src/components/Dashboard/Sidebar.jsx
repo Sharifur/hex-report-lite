@@ -1,30 +1,14 @@
 import "./../../assets/scss/sections/sidebar.scss";
 import  logoIcon  from "../../assets/icons/logoIcon.svg";
-import  menuIcon  from "../../assets/icons/Menu.svg";
-import  DashboardIcon  from "../../assets/icons/dashboard.svg";
-import {useState} from "react";
-import {Link, useLocation, useSearchParams} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {useSidebar} from "../../context/SidebarContext.jsx";
 import { __ } from "@wordpress/i18n";
-
+import {ShoppingBasket, LayoutGrid, Gauge} from "lucide-react";
 export default function Sidebar(){
-    const [activeMenuItem, setActiveMenuItem] = useState(location.pathname);
+
     const { toggleSidebar, isSidebarActive } = useSidebar();
 
-    const [toggleDropdown,setToggleDropdown] = useState(false);
-
-
-
-	// const [searchParams, setSearchParams] = useSearchParams();
-	// searchParams.set("page", "hexreport-page");
-	// setSearchParams(searchParams);
-
-    const handleMenuItemClick = (path) => {
-        setActiveMenuItem(path);
-    };
 	const windowParams = window.location.search;
-
-    const salesDropdown = ['/sales/by-product','/sales/by-channel','/sales','/sales/by-product-type','/sales/by-locations'];
 
     return (
         <div className={`sidebarWrapper ${isSidebarActive ? 'active' : ''}`}>
@@ -35,21 +19,14 @@ export default function Sidebar(){
                 </a>
             </div>
             <ul>
-                <li className={`${activeMenuItem === '/' ? 'active' : ''}`}>
-                    <Link to={'/' +windowParams}>
-                        <img src={DashboardIcon} alt="dashboard icon"/>
-                        <span className="menuText">{__("Dashboard","hexreport")} </span>
-                    </Link>
+                <li>
+					<NavLink to={'/' + windowParams} exact activeClassName="active"><Gauge size={20}/><span className="menuText">{__("Dashboard","hexreport")} </span></NavLink>
                 </li>
 				<li>
-					<Link to={"/sales/by-product" + windowParams}
-						  onClick={() => handleMenuItemClick('/sales/by-product')} className={`${activeMenuItem === '/sales/by-product' ? 'active' : ''}`}
-					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></Link>
+					<NavLink to={"/sales/by-product" + windowParams} exact activeClassName="active"><ShoppingBasket size={20}/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></NavLink>
 				</li>
 				<li>
-					<Link to={"/sales/by-categories" + windowParams}
-						  onClick={() => handleMenuItemClick('/sales/by-categories')} className={`${activeMenuItem === '/sales/by-categories' ? 'active' : ''}`}
-					><img src={DashboardIcon} alt="dashboard icon"/><span className="menuText">{__("Sales by Categories","hexreport")}</span></Link>
+					<NavLink to={"/sales/by-categories" + windowParams} exact activeClassName="active"><LayoutGrid size={20}/><span className="menuText">{__("Sales by Categories","hexreport")}</span></NavLink>
 				</li>
             </ul>
         </div>
