@@ -11,11 +11,10 @@ return array(
     'Symfony\\Component\\VarDumper\\' => array($vendorDir . '/symfony/var-dumper'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Kathamo\\Framework\\' => array($vendorDir . '/codesvault/kathamo-framework/src'),
-    'HexCoupon\\Database\\' => array($baseDir . '/database'),
-    'HexCoupon\\App\\' => array($baseDir . '/app'),
+    'HexReport\\Database\\' => array($baseDir . '/database'),
+    'HexReport\\App\\' => array($baseDir . '/app'),
     'Faker\\' => array($vendorDir . '/fakerphp/faker/src/Faker'),
     'Codesvault\\WPseeder\\' => array($vendorDir . '/codesvault/wp-seeder'),
     'Codesvault\\Validator\\' => array($vendorDir . '/codesvault/validator/src'),
     'CodesVault\\Howdyqb\\' => array($vendorDir . '/codesvault/howdy-qb/src'),
-    'Appsero\\' => array($vendorDir . '/appsero/client/src', $vendorDir . '/appsero/updater/src'),
 );

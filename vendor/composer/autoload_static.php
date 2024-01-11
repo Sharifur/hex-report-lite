@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb6000c27c91c5ca19d3ead096742b602
+class ComposerStaticInit5dbff96e809a47cdf7473f9f1f520936
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -14,90 +14,81 @@ class ComposerStaticInitb6000c27c91c5ca19d3ead096742b602
     );
 
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\VarDumper\\' => 28,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Container\\' => 14,
         ),
-        'K' => 
+        'K' =>
         array (
             'Kathamo\\Framework\\' => 18,
         ),
-        'H' => 
+        'H' =>
         array (
-            'HexCoupon\\Database\\' => 19,
-            'HexCoupon\\App\\' => 14,
+            'HexReport\\Database\\' => 19,
+            'HexReport\\App\\' => 14,
         ),
-        'F' => 
+        'F' =>
         array (
             'Faker\\' => 6,
         ),
-        'C' => 
+        'C' =>
         array (
             'Codesvault\\WPseeder\\' => 20,
             'Codesvault\\Validator\\' => 21,
             'CodesVault\\Howdyqb\\' => 19,
         ),
-        'A' => 
-        array (
-            'Appsero\\' => 8,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Php80\\' => 
+        'Symfony\\Polyfill\\Php80\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Component\\VarDumper\\' => 
+        'Symfony\\Component\\VarDumper\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Kathamo\\Framework\\' => 
+        'Kathamo\\Framework\\' =>
         array (
             0 => __DIR__ . '/..' . '/codesvault/kathamo-framework/src',
         ),
-        'HexCoupon\\Database\\' => 
+        'HexReport\\Database\\' =>
         array (
             0 => __DIR__ . '/../..' . '/database',
         ),
-        'HexCoupon\\App\\' => 
+        'HexReport\\App\\' =>
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
-        'Faker\\' => 
+        'Faker\\' =>
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
         ),
-        'Codesvault\\WPseeder\\' => 
+        'Codesvault\\WPseeder\\' =>
         array (
             0 => __DIR__ . '/..' . '/codesvault/wp-seeder',
         ),
-        'Codesvault\\Validator\\' => 
+        'Codesvault\\Validator\\' =>
         array (
             0 => __DIR__ . '/..' . '/codesvault/validator/src',
         ),
-        'CodesVault\\Howdyqb\\' => 
+        'CodesVault\\Howdyqb\\' =>
         array (
             0 => __DIR__ . '/..' . '/codesvault/howdy-qb/src',
-        ),
-        'Appsero\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/appsero/client/src',
-            1 => __DIR__ . '/..' . '/appsero/updater/src',
         ),
     );
 
@@ -113,9 +104,9 @@ class ComposerStaticInitb6000c27c91c5ca19d3ead096742b602
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb6000c27c91c5ca19d3ead096742b602::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb6000c27c91c5ca19d3ead096742b602::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitb6000c27c91c5ca19d3ead096742b602::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5dbff96e809a47cdf7473f9f1f520936::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5dbff96e809a47cdf7473f9f1f520936::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit5dbff96e809a47cdf7473f9f1f520936::$classMap;
 
         }, null, ClassLoader::class);
     }
