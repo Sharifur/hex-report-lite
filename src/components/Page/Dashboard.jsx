@@ -206,10 +206,10 @@ export default function Dashboard(){
 	const noDataFoundText = __("No data found","hexreport");
 
     const cardListItems = [
-        {title: translatedText.cancelled,amount: cancelledOrderRation ? "("+cancelledOrderRation.toFixed(2)+"%)" : "No data found"},
-        {title: translatedText.refunded,amount: refundedOrderRation ? "("+refundedOrderRation.toFixed(2)+"%)" : "No data found"},
-        {title: translatedText.failed,amount: failedOrderRation ? "("+failedOrderRation.toFixed(2)+"%)" : "No data found"},
-		{title: translatedText.directBankTranser,amount: bankTransferRation ? "("+bankTransferRation.toFixed(2)+"%)" : "No data found"},
+        {title: translatedText.cancelled,amount: cancelledOrderRation ? "("+Number(cancelledOrderRation).toFixed(2)+"%)" : "No data found"},
+        {title: translatedText.refunded,amount: refundedOrderRation ? "("+Number(refundedOrderRation).toFixed(2)+"%)" : "No data found"},
+        {title: translatedText.failed,amount: failedOrderRation ? "("+Number(failedOrderRation).toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.directBankTranser,amount: bankTransferRation ? "("+Number(bankTransferRation).toFixed(2)+"%)" : "No data found"},
 		{title: translatedText.checkPayments,amount: checkPaymentRatio ? "("+checkPaymentRatio.toFixed(2)+"%)" : "No data found"},
 		{title: translatedText.cashOnDelivery,amount: cashOnDeliveryRatio ? "("+cashOnDeliveryRatio.toFixed(2)+"%)" : "No data found"},
     ];

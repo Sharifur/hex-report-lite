@@ -5,7 +5,7 @@ import OrderCard from "../OrderCard.jsx";
 import Container from "../Layouts/Container.jsx";
 import CardList from "../Cards/CardList.jsx";
 import Card from "../Cards/Card.jsx";
-import {DoughnutChart} from "../charts/DoughnutChart.jsx";
+// import {DoughnutChart} from "../charts/DoughnutChart.jsx";
 import CardHeader from "../Cards/CardHeader.jsx";
 import "../../assets/scss/sections/ContentArea.scss";
 import {useSidebar} from "../../context/SidebarContext.jsx";
