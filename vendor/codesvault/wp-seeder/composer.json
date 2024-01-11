@@ -1,0 +1,31 @@
+{
+    "name": "codesvault/wp-seeder",
+    "description": "Database seeder for WordPress",
+    "version": "1.1.0",
+    "minimum-stability": "stable",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Codesvault\\WPseeder\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "CodesVault",
+            "email": "codesvault@gmail.com"
+        },
+        {
+            "name": "Keramot UL Islam",
+            "email": "keramotul.islam@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "codesvault/howdy-qb": "^1.3",
+        "fakerphp/faker": "1.20"
+    },
+    "bin": [
+        "bin/wpseed"
+    ]
+}

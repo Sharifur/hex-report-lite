@@ -219,7 +219,6 @@ class AjaxApiController extends Controller
 				'msg' => __( 'hello','hexreport' ),
 				'type' => 'success',
 				'totalSalesOfYear' => $monthly_completed_sales,
-
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -257,7 +256,6 @@ class AjaxApiController extends Controller
 				'msg' => __( 'hello', 'hexreport' ),
 				'type' => 'success',
 				'totalVisitorsCount' => $totalVisitorsCount,
-
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -322,7 +320,6 @@ class AjaxApiController extends Controller
 				'totalCompletedOredersFromJanToApr' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_amount_jan_apr ) ),
 				'totalCompletedOredersFromMayToAug' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_amount_may_aug ) ),
 				'totalCompletedOredersFromSepToDec' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_amount_sep_dec ) ),
-
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -393,7 +390,6 @@ class AjaxApiController extends Controller
 				'cancelledOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $cancelled_order_ratio ) ),
 				'refundedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $refunded_order_ration ) ),
 				'failedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $failed_order_ration ) ),
-
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
