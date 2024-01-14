@@ -245,7 +245,7 @@ class AjaxApiController extends Controller
 				->from('hexreport_visitor_log hexreport_visitor_log')
 				->get();
 
-		$totalVisitorsCount = ! empty( $result[0] ) ? $result[0] : 0;
+		$totalVisitorsCount = ! empty( $result[0] ) ? $result[0] : [];
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
@@ -413,55 +413,54 @@ class AjaxApiController extends Controller
 	 */
 	public function count_payment_method_ratio()
 	{
-		// Query completed orders
-		$args = [
-			'post_type' => 'shop_order',
-			'posts_per_page' => -1,
-			'post_status' => 'wc-completed', // Filter by completed orders
-		];
 
-		$completed_orders = get_posts( $args );
+		$completed_orders = wc_get_orders( [
+			'status' => 'completed',
+			'limit'  => -1, // Retrieve all orders
+		] );
 
-		$total_order_count = count( $completed_orders ); // Total order count
-
+		$total_order_count = 0;
 		$payment_method_counts = [];
 		$shipping_method_counts = [];
 
 		foreach ( $completed_orders as $order ) {
-			// Get the payment method for each completed order
-			$order_id = $order->ID;
-			$order = wc_get_order( $order_id );
-			$payment_method = $order->get_payment_method();
+			if ( $order instanceof \WC_Order ) {
+				$payment_method = $order->get_payment_method();
+				$shipping_method = $order->get_shipping_method();
 
-			// Get the shipping method for each completed order
-			$shipping_method = $order->get_shipping_method();
-
-			// Increment the count for this payment method
-			if ( ! empty( $payment_method ) ) {
-				if ( !isset( $payment_method_counts[$payment_method] ) ) {
-					$payment_method_counts[$payment_method] = 1;
-				} else {
-					$payment_method_counts[$payment_method]++;
+				// Increment the count for this payment method
+				if (!empty($payment_method)) {
+					if (!isset($payment_method_counts[$payment_method])) {
+						$payment_method_counts[$payment_method] = 1;
+					} else {
+						$payment_method_counts[$payment_method]++;
+					}
 				}
-			}
 
-			// Increment the count for shipping method
-			if ( ! empty( $shipping_method ) ) {
-				if ( !isset( $shipping_method_counts[$shipping_method] ) ) {
-					$shipping_method_counts[$shipping_method] = 1;
-				} else {
-					$shipping_method_counts[$shipping_method]++;
+				// Increment the count for shipping method
+				if (!empty($shipping_method)) {
+					if (!isset($shipping_method_counts[$shipping_method])) {
+						$shipping_method_counts[$shipping_method] = 1;
+					} else {
+						$shipping_method_counts[$shipping_method]++;
+					}
+				}
+
+				if ($order->get_status() === 'completed' && !$order->get_parent_id()) {
+					$total_order_count++;
 				}
 			}
 		}
 
-		$direct_bank_transfer_ration = 0 != $total_order_count ? $payment_method_counts['bacs'] / $total_order_count * 100 : 0;
-		$check_payment_ration = 0 != $total_order_count ? $payment_method_counts['cheque'] / $total_order_count * 100 : 0;
-		$cash_on_delivery_ration = 0 != $total_order_count ? $payment_method_counts['cod'] / $total_order_count * 100 : 0;
+		$direct_bank_transfer_ration =  ! empty( $payment_method_counts['bacs'] ) ? $payment_method_counts['bacs'] / $total_order_count * 100 : 0;
 
-		$local_pickup_ratio = 0 != $total_order_count ? $shipping_method_counts['Local pickup'] / $total_order_count * 100 : 0;
-		$flat_rate_ratio = 0 != $total_order_count ? $shipping_method_counts['Flat rate'] / $total_order_count * 100 : 0;
-		$free_shipping_ratio = 0 != $total_order_count ? $shipping_method_counts['Free shipping'] / $total_order_count * 100 : 0;
+		$check_payment_ration = ! empty( $payment_method_counts['cheque'] ) ? $payment_method_counts['cheque'] / $total_order_count * 100 : 0 ;
+
+		$cash_on_delivery_ration = ! empty( $payment_method_counts['cod'] ) ? $payment_method_counts['cod'] / $total_order_count * 100 : 0;
+
+		$local_pickup_ratio = ! empty( $shipping_method_counts['Local pickup'] ) ? $shipping_method_counts['Local pickup'] / $total_order_count * 100 : 0;
+		$flat_rate_ratio = ! empty( $shipping_method_counts['Flat rate'] ) ? $shipping_method_counts['Flat rate'] / $total_order_count * 100 : 0;
+		$free_shipping_ratio = ! empty( $shipping_method_counts['Free shipping'] ) ? $shipping_method_counts['Free shipping'] / $total_order_count * 100 : 0;
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
@@ -471,11 +470,11 @@ class AjaxApiController extends Controller
 				'msg' => __('hello','hexreport'),
 				'type' => 'success',
 				'bankTransferRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $direct_bank_transfer_ration ) ),
-				'checkPaymentRatio' => __( $check_payment_ration, 'hexreport' ),
-				'cashOnDeliveryRatio' => __( $cash_on_delivery_ration, 'hexreport' ),
-				'localPickupRatio' => __( $local_pickup_ratio, 'hexreport' ),
-				'flatRateRatio' => __( $flat_rate_ratio, 'hexreport' ),
-				'freeShippingRatio' => __( $free_shipping_ratio, 'hexreport' ),
+				'checkPaymentRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $check_payment_ration ) ),
+				'cashOnDeliveryRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $cash_on_delivery_ration ) ),
+				'localPickupRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $local_pickup_ratio ) ),
+				'flatRateRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $flat_rate_ratio ) ),
+				'freeShippingRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $free_shipping_ratio ) ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -495,105 +494,81 @@ class AjaxApiController extends Controller
 	 */
 	public function show_first_top_selling_product_monthly_data()
 	{
-		if ( class_exists( 'WooCommerce' ) ) {
-			// Get the current date
-			$current_date = current_time( 'Y-m-d' );
+		// Get all completed orders
+		$completed_orders = wc_get_orders( [
+			'status' => 'completed',
+		] );
 
-			// Calculate the date 12 months ago from the current date
-			$twelve_months_ago = date( 'Y-m-d', strtotime('-12 months', strtotime( $current_date ) ) );
+		// Create a multidimensional array to store monthly product sales count
+		$monthly_product_sales_count = [];
 
-			// Create an array to store monthly top-selling product data for the current year
-			$monthly_top_selling_product = [];
+		// Loop through each completed order
+		foreach ( $completed_orders as $order ) {
+			// Check if the order is a refund or part of a refunded order, and skip it if true
+			if ( !$order->get_parent_id() ) {
+				// Get order items
+				$order_items = $order->get_items();
 
-			// Loop through each month within the last 12 months
-			$current_month = strtotime( $current_date );
-			$start_date = strtotime( $twelve_months_ago );
+				// Get the order date
+				$order_date = $order->get_date_created();
+				$month_key = $order_date->format( 'n' ); // 'n' format gives the month without leading zeros
 
-			// Initialize an array for all months in the year
-			$all_months = [
-				'January', 'February', 'March', 'April', 'May', 'June',
-				'July', 'August', 'September', 'October', 'November', 'December'
-			];
-
-			// Iterate over all months and initialize them with 0 sales for the top product
-			foreach ( $all_months as $month_name ) {
-				$formatted_month = $month_name . ' ' . date( 'Y', $current_month );
-				$monthly_top_selling_product[$formatted_month] = 0;
-			}
-
-			while ( $current_month >= $start_date ) {
-				$month_start_date = date('Y-m-01', $current_month);
-				$month_end_date = date('Y-m-t', $current_month);
-
-				// Get all completed orders for the current month
-				$args = [
-					'post_type' => 'shop_order',
-					'post_status' => 'wc-completed',
-					'date_query' => [
-						'after' => $month_start_date,
-						'before' => $month_end_date,
-					],
-					'posts_per_page' => -1,
-				];
-
-				$orders = get_posts( $args );
-
-				// Create an array to store product sales counts for the current month
-				$monthly_product_sales = [];
-
-				foreach ( $orders as $order ) {
-					// Get order items
-					$order_items = wc_get_order( $order->ID )->get_items();
-
-					foreach ( $order_items as $item ) {
-						// Get product ID and quantity sold
-						$product_id = $item->get_product_id();
-						$quantity_sold = $item->get_quantity();
-
-						// Increment the product's sales count in the array
-						if ( isset( $monthly_product_sales[$product_id] ) ) {
-							$monthly_product_sales[$product_id] += $quantity_sold;
-						} else {
-							$monthly_product_sales[$product_id] = $quantity_sold;
-						}
-					}
+				// Initialize array for the month if not already set
+				if ( !isset( $monthly_product_sales_count[$month_key] ) ) {
+					$monthly_product_sales_count[$month_key] = array();
 				}
 
-				// Sort products by sales count in descending order for the current month
-				arsort( $monthly_product_sales );
+				// Loop through order items
+				foreach ( $order_items as $item ) {
+					// Get the product ID and quantity
+					$product_id = $item->get_product_id();
+					$quantity = $item->get_quantity();
 
-				// Get the top-selling product for the current month (only the first one)
-				$top_selling_product = reset( $monthly_product_sales );
-
-				// Store monthly data in the array
-				$formatted_month = date( 'F Y', $current_month );
-				$monthly_top_selling_product[$formatted_month] = $top_selling_product;
-
-				// Move to the previous month
-				$current_month = strtotime( '-1 month', $current_month );
+					// Increment the monthly product sales count
+					if ( isset( $monthly_product_sales_count[$month_key][$product_id] ) ) {
+						$monthly_product_sales_count[$month_key][$product_id] += $quantity;
+					} else {
+						$monthly_product_sales_count[$month_key][$product_id] = $quantity;
+					}
+				}
 			}
 		}
-		array_splice( $monthly_top_selling_product, -3 );
 
-		$final_data = [];
+		// Create an array to store the monthly quantities for the top-selling product
+		$monthly_quantities_top_selling = [];
 
-		foreach ( $monthly_top_selling_product as $value ) {
-			if ( empty( $value ) ) {
-				$final_data[] = 0;
-			}
-			else {
-				$final_data[] = $value;
+		// Loop through each month
+		$month_names = [
+			1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+			7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+		];
+
+		foreach ( $month_names as $month => $month_name ) {
+			// Check if the array for the current month exists
+			if ( isset( $monthly_product_sales_count[$month] ) ) {
+				// Sort the products for the current month in descending order
+				arsort( $monthly_product_sales_count[$month] );
+
+				// Get the product ID of the top-selling product for the current month
+				$top_selling_product_id = key( $monthly_product_sales_count[$month] );
+
+				// Store the quantity for the top-selling product
+				$monthly_quantities_top_selling[$month_name] = $monthly_product_sales_count[$month][$top_selling_product_id];
+			} else {
+				// If there is no data for the month, store 0
+				$monthly_quantities_top_selling[$month_name] = 0;
 			}
 		}
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
+			$monthly_quantities_top_selling = array_map( 'esc_html', $monthly_quantities_top_selling );
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello', 'hexreport'),
+				'msg' => __( 'hello', 'hexreport' ),
 				'type' => 'success',
-				'firstTopSellingProductMonthlyData' => __( $final_data, 'hexreport' ),
+				'firstTopSellingProductMonthlyData' => $monthly_quantities_top_selling,
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -614,107 +589,92 @@ class AjaxApiController extends Controller
 	 */
 	public function get_second_top_product_monthly_data()
 	{
-		if ( class_exists( 'WooCommerce' ) ) {
-			// Get the current date
-			$current_date = current_time('Y-m-d');
+		// Get all completed orders
+		$completed_orders = wc_get_orders( [
+			'status' => 'completed',
+		] );
 
-			// Calculate the date 12 months ago from the current date
-			$twelve_months_ago = date( 'Y-m-d', strtotime( '-12 months', strtotime( $current_date ) ) );
+		// Create a multidimensional array to store monthly product sales count
+		$monthly_product_sales_count = [];
 
-			// Create an array to store monthly top-selling product data for the current year
-			$monthly_top_selling_product = [];
+		// Loop through each completed order
+		foreach ( $completed_orders as $order ) {
+			// Check if the order is a refund or part of a refunded order, and skip it if true
+			if ( !$order->get_parent_id() ) {
+				// Get order items
+				$order_items = $order->get_items();
 
-			// Loop through each month within the last 12 months
-			$current_month = strtotime( $current_date );
-			$start_date = strtotime( $twelve_months_ago );
+				// Get the order date
+				$order_date = $order->get_date_created();
+				$month_key = $order_date->format('n'); // 'n' format gives the month without leading zeros
 
-			// Initialize an array for all months in the year
-			$all_months = [
-				'January', 'February', 'March', 'April', 'May', 'June',
-				'July', 'August', 'September', 'October', 'November', 'December'
-			];
+				// Initialize array for the month if not already set
+				if ( !isset( $monthly_product_sales_count[$month_key] ) ) {
+					$monthly_product_sales_count[$month_key] = [];
+				}
 
-			// Iterate over all months and initialize them with 0 sales for the top product
-			foreach ( $all_months as $month_name ) {
-				$formatted_month = $month_name . ' ' . date( 'Y', $current_month );
-				$monthly_top_selling_product[$formatted_month] = 0;
-			}
+				// Loop through order items
+				foreach ( $order_items as $item ) {
+					// Get the product ID and quantity
+					$product_id = $item->get_product_id();
+					$quantity = $item->get_quantity();
 
-			while ( $current_month >= $start_date ) {
-				$month_start_date = date( 'Y-m-01', $current_month );
-				$month_end_date = date( 'Y-m-t', $current_month );
-
-				// Get all completed orders for the current month
-				$args = [
-					'post_type' => 'shop_order',
-					'post_status' => 'wc-completed',
-					'date_query' => [
-						'after' => $month_start_date,
-						'before' => $month_end_date,
-					],
-					'posts_per_page' => -1,
-				];
-
-				$orders = get_posts( $args );
-
-				// Create an array to store product sales counts for the current month
-				$monthly_product_sales = [];
-
-				foreach ( $orders as $order ) {
-					// Get order items
-					$order_items = wc_get_order( $order->ID )->get_items();
-
-					foreach ( $order_items as $item ) {
-						// Get product ID and quantity sold
-						$product_id = $item->get_product_id();
-						$quantity_sold = $item->get_quantity();
-
-						// Increment the product's sales count in the array
-						if ( isset( $monthly_product_sales[$product_id] ) ) {
-							$monthly_product_sales[$product_id] += $quantity_sold;
-						} else {
-							$monthly_product_sales[$product_id] = $quantity_sold;
-						}
+					// Increment the monthly product sales count
+					if ( isset( $monthly_product_sales_count[$month_key][$product_id] ) ) {
+						$monthly_product_sales_count[$month_key][$product_id] += $quantity;
+					} else {
+						$monthly_product_sales_count[$month_key][$product_id] = $quantity;
 					}
 				}
-
-				// Sort products by sales count in descending order for the current month
-				arsort( $monthly_product_sales );
-
-				// Get the top-selling products for the current month (only the first two)
-				$top_selling_products = array_slice( $monthly_product_sales, 0, 2 );
-
-				// Store monthly data in the array
-				$formatted_month = date( 'F Y', $current_month );
-
-				if ( count( $top_selling_products ) >= 2 ) {
-					$monthly_top_selling_product[$formatted_month] = $top_selling_products[1]; // Get the second element
-				} else {
-					// Handle the case where there are not enough products to determine a second top-selling product
-					$monthly_top_selling_product[$formatted_month] = 0; // Or set a default value
-				}
-
-				// Move to the previous month
-				$current_month = strtotime( '-1 month', $current_month );
 			}
 		}
-		array_splice( $monthly_top_selling_product, -3 );
 
-		$final_data = [];
+		// Create an array to store the monthly quantities for the second top-selling product
+		$monthly_quantities_second_top_selling = [];
 
-		foreach ( $monthly_top_selling_product as $value ) {
-			$final_data[] = $value;
+		// Loop through each month
+		$month_names = [
+			1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+			7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+		];
+
+		foreach ( $month_names as $month => $month_name ) {
+			// Check if the array for the current month exists
+			if ( isset( $monthly_product_sales_count[$month] ) ) {
+				// Sort the products for the current month in descending order
+				arsort( $monthly_product_sales_count[$month] );
+
+				// Skip if there's only one product for the month
+				if ( count( $monthly_product_sales_count[$month] ) < 2 ) {
+					$monthly_quantities_second_top_selling[$month_name] = 0;
+					continue;
+				}
+
+				// Skip the top-selling product
+				$top_product_id = key( $monthly_product_sales_count[$month] );
+				next( $monthly_product_sales_count[$month] );
+
+				// Get the product ID of the second top-selling product for the current month
+				$second_top_selling_product_id = key( $monthly_product_sales_count[$month] );
+
+				// Store the quantity for the second top-selling product
+				$monthly_quantities_second_top_selling[$month_name] = $monthly_product_sales_count[$month][$second_top_selling_product_id];
+			} else {
+				// If there is no data for the month, store 0
+				$monthly_quantities_second_top_selling[$month_name] = 0;
+			}
 		}
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
+			$monthly_quantities_second_top_selling = array_map( 'esc_html', $monthly_quantities_second_top_selling );
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
 				'msg' => __( 'hello', 'hexreport' ),
 				'type' => 'success',
-				'secondTopSellingProductMonthlyData' => __( $final_data, 'hexreport' ),
-			], 200);
+				'secondTopSellingProductMonthlyData' => $monthly_quantities_second_top_selling,
+			], 200 );
 		} else {
 			// Nonce verification failed, handle the error
 			wp_send_json( [
@@ -733,28 +693,50 @@ class AjaxApiController extends Controller
 	 */
 	public function get_top_two_selling_product_name()
 	{
-		$arr = [];
+		// Get orders
+		$orders = wc_get_orders( [
+			'status' => 'completed', // You can adjust the status based on your requirements
+			'limit'  => -1, // To retrieve all orders
+		] );
 
-		if ( class_exists( 'WooCommerce' ) ) {
-			// Query to get the top-selling products
-			$args = [
-				'post_type' => 'product',
-				'posts_per_page' => 2,
-				'orderby' => 'meta_value_num',
-				'meta_key' => 'total_sales',
-				'order' => 'DESC',
-			];
+		// Initialize an empty array to store product sales data
+		$product_sales = [];
 
-			$topProducts = new \WP_Query($args);
+		// Loop through each order
+		foreach ( $orders as $order ) {
+			// Get order items
+			$items = $order->get_items();
 
-			while( $topProducts->have_posts() ) {
-				$topProducts->the_post();
-				$arr[] = get_the_title();
+			// Loop through each item in the order
+			foreach ( $items as $item ) {
+				$product_id    = $item->get_product_id();
+				$product_qty   = $item->get_quantity();
+
+				// Update product sales data
+				if ( isset( $product_sales[ $product_id ] ) ) {
+					$product_sales[ $product_id ] += $product_qty;
+				} else {
+					$product_sales[ $product_id ] = $product_qty;
+				}
 			}
 		}
 
-		$firstProductName = ! empty( $arr[0] ) ? $arr[0] : '';
-		$secondProductName = ! empty( $arr[1] ) ? $arr[1] : '';
+		// Sort the products based on sales in descending order
+		arsort( $product_sales );
+
+		// Get the top two selling product IDs
+		$top_two_product_ids = array_slice( array_keys( $product_sales ), 0, 2 );
+
+		// Get the product names based on the IDs
+		$top_two_product_names = [];
+
+		foreach ( $top_two_product_ids as $product_id ) {
+			$product = wc_get_product( $product_id );
+			$top_two_product_names[] = $product->get_name();
+		}
+
+		$firstProductName = ! empty( $top_two_product_names[0] ) ? $top_two_product_names[0] : '';
+		$secondProductName = ! empty( $top_two_product_names[1] ) ? $top_two_product_names[1] : '';
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
@@ -863,17 +845,24 @@ class AjaxApiController extends Controller
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
+			$category_names = array_map( 'esc_html', $category_names );
+			$category_sales = array_map( 'esc_html', $category_sales );
+			$category_sales_ratio = array_map( 'esc_html', $category_sales_ratio );
+			$product_names = array_map( 'esc_html', $product_names );
+			$product_sales = array_map( 'esc_html', $product_sales );
+			$product_sale_ratio = array_map( 'esc_html', $product_sale_ratio );
 			// Nonce is valid, proceed with your code
+
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello', 'hexreport'),
+				'msg' => __( 'hello', 'hexreport' ),
 				'type' => 'success',
 				'topSellingCategoreisNames' => $category_names,
-				'topSellingCategoreisCount' => __( $category_sales, 'hexreport' ),
-				'categoriesSalesRatio' => __( $category_sales_ratio, 'hexreport' ),
-				'topSellingProductsNames' => __( $product_names, 'hexreport' ),
-				'topSellingProductsCount' => __( $product_sales, 'hexreport' ),
-				'productSaleRatio' => __( $product_sale_ratio, 'hexreport' ),
+				'topSellingCategoreisCount' => $category_sales,
+				'categoriesSalesRatio' => $category_sales_ratio,
+				'topSellingProductsNames' => $product_names,
+				'topSellingProductsCount' => $product_sales,
+				'productSaleRatio' => $product_sale_ratio,
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -947,7 +936,7 @@ class AjaxApiController extends Controller
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
-				'msg' => __('hello','hexreport'),
+				'msg' => __( 'hello','hexreport' ),
 				'type' => 'success',
 				'firstCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $firstCatName ) ),
 				'secondCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $secondCatName ) ),
@@ -1009,7 +998,7 @@ class AjaxApiController extends Controller
 			$top_category_data = [];
 		}
 
-		if (isset($top_categories[1])) {
+		if ( isset( $top_categories[1] ) ) {
 			$second_top_category_data = $monthly_category_sales[$top_categories[1]];
 		} else {
 			$second_top_category_data = [];
@@ -1061,13 +1050,16 @@ class AjaxApiController extends Controller
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
+			$final_data_1 = array_map( 'esc_html', $final_data_1 );
+			$final_data_2 = array_map( 'esc_html', $final_data_2 );
+
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
 				'msg' => __('hello','hexreport'),
 				'type' => 'success',
-				'firstCatMonthData' => __( $final_data_1, 'hexreport' ),
-				'secondCatMonthData' => __( $final_data_2, 'hexreport' ),
+				'firstCatMonthData' => $final_data_1,
+				'secondCatMonthData' => $final_data_2,
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error

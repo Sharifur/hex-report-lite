@@ -123,7 +123,7 @@ export default function ByProduct(){
 	if (topSellingProductsNames.length > 0) {
 		cardListItems = topSellingProductsNames.map((name, index) => ({
 			title: name,
-			amount: "(" + productSaleRatio[index].toFixed(2) + "%)",
+			amount: "(" + parseFloat(productSaleRatio[index]).toFixed(2) + "%)",
 		}));
 	} else {
 		cardListItems = [

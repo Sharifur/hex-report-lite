@@ -35,6 +35,7 @@ export default function ByCategories(){
 				},
 			})
 			.then(({data}) => {
+				console.log(data)
 				if (data) {
 					setTopSellingCategoriesNames(data.topSellingCategoreisNames)
 					setTopSellingCategoriesCount(data.topSellingCategoreisCount)
@@ -102,7 +103,7 @@ export default function ByCategories(){
 	if(topSellingCategoriesNames.length>0){
 		cardListItems = topSellingCategoriesNames.map((name, index) => ({
 			title: name,
-			amount: "("+categoriesSaleRatio[index].toFixed(2)+"%)",
+			amount: "("+parseFloat(categoriesSaleRatio[index]).toFixed(2)+"%)",
 		}));
 	} else {
 		cardListItems = [

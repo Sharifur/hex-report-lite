@@ -205,14 +205,14 @@ export default function Dashboard(){
 
 	const noDataFoundText = __("No data found","hexreport");
 
-    const cardListItems = [
-        {title: translatedText.cancelled,amount: cancelledOrderRation ? "("+Number(cancelledOrderRation).toFixed(2)+"%)" : "No data found"},
-        {title: translatedText.refunded,amount: refundedOrderRation ? "("+Number(refundedOrderRation).toFixed(2)+"%)" : "No data found"},
-        {title: translatedText.failed,amount: failedOrderRation ? "("+Number(failedOrderRation).toFixed(2)+"%)" : "No data found"},
+	const cardListItems = [
+		{title: translatedText.cancelled,amount: cancelledOrderRation ? "("+Number(cancelledOrderRation).toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.refunded,amount: refundedOrderRation ? "("+Number(refundedOrderRation).toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.failed,amount: failedOrderRation ? "("+Number(failedOrderRation).toFixed(2)+"%)" : "No data found"},
 		{title: translatedText.directBankTranser,amount: bankTransferRation ? "("+Number(bankTransferRation).toFixed(2)+"%)" : "No data found"},
-		{title: translatedText.checkPayments,amount: checkPaymentRatio ? "("+checkPaymentRatio.toFixed(2)+"%)" : "No data found"},
-		{title: translatedText.cashOnDelivery,amount: cashOnDeliveryRatio ? "("+cashOnDeliveryRatio.toFixed(2)+"%)" : "No data found"},
-    ];
+		{title: translatedText.checkPayments,amount: checkPaymentRatio ? "("+Number(checkPaymentRatio).toFixed(2)+"%)" : "No data found"},
+		{title: translatedText.cashOnDelivery,amount: cashOnDeliveryRatio ? "("+Number(cashOnDeliveryRatio).toFixed(2)+"%)" : "No data found"},
+	];
 
 	const doughnutDashboardData = {
 		labels: [translatedText.localPickup, translatedText.flatRate, translatedText.freeShipping],
@@ -233,8 +233,8 @@ export default function Dashboard(){
 		return <DoughnutChart labels={doughnutDashboardData.labels} datasets={doughnutDashboardData.datasets}/>;
 	}
 
-    return (
-        <>
+	return (
+		<>
 			<Container col={3}>
 				<DashBox title={translatedText.completedOrders} text={totalSales ? totalSales : 0} />
 				<DashBox title={translatedText.totalOrders} text={totalOrdersAmount ? totalOrdersAmount : 0}  />
@@ -243,24 +243,24 @@ export default function Dashboard(){
 
 				<DashBox title={`${translatedText.topSellingCategory} ${topSellingCatName}`} text={topSellingCatPrice ? topSellingCatPrice : 0}  />
 				<DashBox title={translatedText.refunded} text={totalRefundedAmount ? totalRefundedAmount : 0} />
-            </Container>
-            <Container col={2} extraClass={'margin-top-30'}>
-                <SalesChart title={translatedText.sales} data={totalSalesOfYear ? totalSalesOfYear : []}/>
-                <SalesChart title={translatedText.visitors} data={totalVisitorsCount ? totalVisitorsCount : []}/>
-            </Container>
-            <Container col={2} extraClass={'margin-top-30'}>
-                <Card>
-                    <div className="chartWithListWrapper">
-                        <div className="donChart">
+			</Container>
+			<Container col={2} extraClass={'margin-top-30'}>
+				<SalesChart title={translatedText.sales} data={totalSalesOfYear ? totalSalesOfYear : []}/>
+				<SalesChart title={translatedText.visitors} data={totalVisitorsCount ? totalVisitorsCount : []}/>
+			</Container>
+			<Container col={2} extraClass={'margin-top-30'}>
+				<Card>
+					<div className="chartWithListWrapper">
+						<div className="donChart">
 							{noData()}
-                        </div>
-                        <div className="orderListWrapper">
-                            <CardList lists={cardListItems}/>
-                        </div>
-                    </div>
-                </Card>
-                <OrderCard title="Orders"/>
-            </Container>
-        </>
-    )
+						</div>
+						<div className="orderListWrapper">
+							<CardList lists={cardListItems}/>
+						</div>
+					</div>
+				</Card>
+				<OrderCard title="Orders"/>
+			</Container>
+		</>
+	)
 }
