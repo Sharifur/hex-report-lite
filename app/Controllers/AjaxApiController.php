@@ -141,24 +141,24 @@ class AjaxApiController extends Controller
 				'topSellingCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_selling_cat_name ) ),
 				'topSellingCatPrice' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_selling_cat_amount ) ),
 
-				'totalSalesOfYear' => $monthly_completed_sales,
+				'totalSalesOfYear' => array_map( 'esc_html', $monthly_completed_sales ),
 
-				'totalVisitorsCount' => $totalVisitorsCount,
+				'totalVisitorsCount' => array_map( 'esc_html', $totalVisitorsCount ),
 
-				'totalCompletedOredersFromJanToApr' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_completed_order_in_three_phases[0] ) ),
-				'totalCompletedOredersFromMayToAug' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_completed_order_in_three_phases[1] ) ),
-				'totalCompletedOredersFromSepToDec' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_completed_order_in_three_phases[2] ) ),
+				'totalCompletedOredersFromJanToApr' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $total_completed_order_in_three_phases[0] ) ? $total_completed_order_in_three_phases[0] : '' ) ),
+				'totalCompletedOredersFromMayToAug' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $total_completed_order_in_three_phases[1] ) ? $total_completed_order_in_three_phases[1] : '' ) ),
+				'totalCompletedOredersFromSepToDec' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $total_completed_order_in_three_phases[2] ) ? $total_completed_order_in_three_phases[2] : '' ) ),
 
-				'cancelledOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_order_ratio[0] ) ),
-				'refundedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_order_ratio[1] ) ),
-				'failedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_order_ratio[2] ) ),
+				'cancelledOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $total_order_ratio[0] ) ? $total_order_ratio[0] : '' ) ),
+				'refundedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $total_order_ratio[1] ) ? $total_order_ratio[1] : '' ) ),
+				'failedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $total_order_ratio[2] ) ? $total_order_ratio[2] : '' ) ),
 
-				'bankTransferRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $count_payment_method_ratio[0] ) ),
-				'checkPaymentRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $count_payment_method_ratio[1] ) ),
-				'cashOnDeliveryRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $count_payment_method_ratio[2] ) ),
-				'localPickupRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $count_payment_method_ratio[3] ) ),
-				'flatRateRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $count_payment_method_ratio[4] ) ),
-				'freeShippingRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $count_payment_method_ratio[5] ) ),
+				'bankTransferRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $count_payment_method_ratio[0] ) ? $count_payment_method_ratio[0] : '' ) ),
+				'checkPaymentRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $count_payment_method_ratio[1] ) ? $count_payment_method_ratio[1] : '' ) ),
+				'cashOnDeliveryRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $count_payment_method_ratio[2] ) ? $count_payment_method_ratio[2] : '' ) ),
+				'localPickupRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $count_payment_method_ratio[3] ) ? $count_payment_method_ratio[3] : '' ) ),
+				'flatRateRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $count_payment_method_ratio[4] ) ? $count_payment_method_ratio[4] : '' ) ),
+				'freeShippingRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( ! empty( $count_payment_method_ratio[5] ) ? $count_payment_method_ratio[5] : '' ) ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -227,30 +227,7 @@ class AjaxApiController extends Controller
 			$monthly_completed_sales[date( 'F', strtotime( $first_day ) )] = $total_completed_sales;
 		}
 
-		// escaping all the values of the array
-		$monthly_completed_sales = array_map( 'esc_html', $monthly_completed_sales );
-
 		return $monthly_completed_sales;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// escaping all the values of the array
-//			$monthly_completed_sales = array_map( 'esc_html', $monthly_completed_sales );
-//
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello','hexreport' ),
-//				'type' => 'success',
-//				'totalSalesOfYear' => $monthly_completed_sales,
-//
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -271,30 +248,7 @@ class AjaxApiController extends Controller
 
 		$totalVisitorsCount = ! empty( $result[0] ) ? $result[0] : [];
 
-		// escaping all the values of the array
-		$totalVisitorsCount = array_map( 'esc_html', $totalVisitorsCount );
-
 		return $totalVisitorsCount;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// escaping all the values of the array
-//			$totalVisitorsCount = array_map( 'esc_html', $totalVisitorsCount );
-//
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello', 'hexreport' ),
-//				'type' => 'success',
-//				'totalVisitorsCount' => $totalVisitorsCount,
-//
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -345,25 +299,6 @@ class AjaxApiController extends Controller
 		$combined_data = [ $total_amount_jan_apr, $total_amount_may_aug, $total_amount_sep_dec ];
 
 		return $combined_data;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello','hexreport' ),
-//				'type' => 'success',
-//				'totalCompletedOredersFromJanToApr' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_amount_jan_apr ) ),
-//				'totalCompletedOredersFromMayToAug' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_amount_may_aug ) ),
-//				'totalCompletedOredersFromSepToDec' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_amount_sep_dec ) ),
-//
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -419,25 +354,6 @@ class AjaxApiController extends Controller
 		$combined_data = [ $cancelled_order_ratio, $refunded_order_ration, $failed_order_ration ];
 
 		return $combined_data;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __('hello', 'hexreport'),
-//				'type' => 'success',
-//				'cancelledOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $cancelled_order_ratio ) ),
-//				'refundedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $refunded_order_ration ) ),
-//				'failedOrderRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $failed_order_ration ) ),
-//
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -502,27 +418,6 @@ class AjaxApiController extends Controller
 		$combined_data = [ $direct_bank_transfer_ration, $check_payment_ration, $cash_on_delivery_ration, $local_pickup_ratio, $flat_rate_ratio, $free_shipping_ratio ];
 
 		return $combined_data;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello','hexreport' ),
-//				'type' => 'success',
-//				'bankTransferRation' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $direct_bank_transfer_ration ) ),
-//				'checkPaymentRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $check_payment_ration ) ),
-//				'cashOnDeliveryRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $cash_on_delivery_ration ) ),
-//				'localPickupRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $local_pickup_ratio ) ),
-//				'flatRateRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $flat_rate_ratio ) ),
-//				'freeShippingRatio' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $free_shipping_ratio ) ),
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -609,26 +504,24 @@ class AjaxApiController extends Controller
 
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
-			// escaping all the values of the array
-			$monthly_quantities_top_selling = array_map( 'esc_html', $monthly_quantities_top_selling );
 			// Nonce is valid, proceed with your code
 			wp_send_json( [
 				// Response data here
 				'msg' => __( 'hello', 'hexreport' ),
 				'type' => 'success',
-				'firstTopSellingProductMonthlyData' => $monthly_quantities_top_selling,
+				'firstTopSellingProductMonthlyData' => array_map( 'esc_html', $monthly_quantities_top_selling ),
 
-				'secondTopSellingProductMonthlyData' => $monthly_quantities_second_top_selling,
+				'secondTopSellingProductMonthlyData' => array_map( 'esc_html', $monthly_quantities_second_top_selling ),
 
-				'firstTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $get_top_two_selling_product_name[0] ) ),
-				'secondTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $get_top_two_selling_product_name[1] ) ),
+				'firstTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( ! empty( $get_top_two_selling_product_name[0] ) ? $get_top_two_selling_product_name[0] : '' ) ),
+				'secondTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( ! empty( $get_top_two_selling_product_name[1] ) ? $get_top_two_selling_product_name[1] : '' ) ),
 
-				'topSellingCategoreisNames' => $get_top_selling_product_and_categoreis[0],
-				'topSellingCategoreisCount' => $get_top_selling_product_and_categoreis[1],
-				'categoriesSalesRatio' => $get_top_selling_product_and_categoreis[2],
-				'topSellingProductsNames' => $get_top_selling_product_and_categoreis[3],
-				'topSellingProductsCount' => $get_top_selling_product_and_categoreis[4],
-				'productSaleRatio' => $get_top_selling_product_and_categoreis[5],
+				'topSellingCategoreisNames' => ! empty( $get_top_selling_product_and_categoreis[0] ) ? $get_top_selling_product_and_categoreis[0] : '',
+				'topSellingCategoreisCount' => ! empty( $get_top_selling_product_and_categoreis[1] ) ? $get_top_selling_product_and_categoreis[1] : '',
+				'categoriesSalesRatio' => ! empty( $get_top_selling_product_and_categoreis[2] ) ? $get_top_selling_product_and_categoreis[2] : '',
+				'topSellingProductsNames' => ! empty( $get_top_selling_product_and_categoreis[3] ) ? $get_top_selling_product_and_categoreis[3] : '',
+				'topSellingProductsCount' => ! empty( $get_top_selling_product_and_categoreis[4] ) ? $get_top_selling_product_and_categoreis[4] : '',
+				'productSaleRatio' => ! empty( $get_top_selling_product_and_categoreis[5] ) ? $get_top_selling_product_and_categoreis[5] : '',
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -725,29 +618,7 @@ class AjaxApiController extends Controller
 			}
 		}
 
-		// escaping all the values of the array
-		$monthly_quantities_second_top_selling = array_map( 'esc_html', $monthly_quantities_second_top_selling );
-
 		return $monthly_quantities_second_top_selling;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// escaping all the values of the array
-//			$monthly_quantities_second_top_selling = array_map( 'esc_html', $monthly_quantities_second_top_selling );
-//
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello', 'hexreport' ),
-//				'type' => 'success',
-//				'secondTopSellingProductMonthlyData' => $monthly_quantities_second_top_selling,
-//			], 200 );
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -808,23 +679,6 @@ class AjaxApiController extends Controller
 		$combined_data = [ $firstProductName, $secondProductName ];
 
 		return $combined_data;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello', 'hexreport' ),
-//				'type' => 'success',
-//				'firstTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $firstProductName ) ),
-//				'secondTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $secondProductName ) ),
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -914,45 +768,16 @@ class AjaxApiController extends Controller
 			$category_sales_ratio[] = $single_item / $total_order_count * 100;
 		}
 
-		$category_names = array_map( 'esc_html', $category_names );
-		$category_sales = array_map( 'esc_html', $category_sales );
-		$category_sales_ratio = array_map( 'esc_html', $category_sales_ratio );
-		$product_names = array_map( 'esc_html', $product_names );
-		$product_sales = array_map( 'esc_html', $product_sales );
-		$product_sale_ratio = array_map( 'esc_html', $product_sale_ratio );
+//		$category_names = array_map( 'esc_html', $category_names );
+//		$category_sales = array_map( 'esc_html', $category_sales );
+//		$category_sales_ratio = array_map( 'esc_html', $category_sales_ratio );
+//		$product_names = array_map( 'esc_html', $product_names );
+//		$product_sales = array_map( 'esc_html', $product_sales );
+//		$product_sale_ratio = array_map( 'esc_html', $product_sale_ratio );
 
 		$combined_value = [ $category_names, $category_sales, $category_sales_ratio, $product_names, $product_sales, $product_sale_ratio ];
 
 		return $combined_value;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// escaping all the values of the array
-//			$category_names = array_map( 'esc_html', $category_names );
-//			$category_sales = array_map( 'esc_html', $category_sales );
-//			$category_sales_ratio = array_map( 'esc_html', $category_sales_ratio );
-//			$product_names = array_map( 'esc_html', $product_names );
-//			$product_sales = array_map( 'esc_html', $product_sales );
-//			$product_sale_ratio = array_map( 'esc_html', $product_sale_ratio );
-//
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __( 'hello', 'hexreport' ),
-//				'type' => 'success',
-//				'topSellingCategoreisNames' => $category_names,
-//				'topSellingCategoreisCount' => $category_sales,
-//				'categoriesSalesRatio' => $category_sales_ratio,
-//				'topSellingProductsNames' => $product_names,
-//				'topSellingProductsCount' => $product_sales,
-//				'productSaleRatio' => $product_sale_ratio,
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
@@ -1026,8 +851,8 @@ class AjaxApiController extends Controller
 				'firstCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $firstCatName ) ),
 				'secondCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $secondCatName ) ),
 
-				'firstCatMonthData' => $get_top_two_categories_monthly_data[0],
-				'secondCatMonthData' => $get_top_two_categories_monthly_data[1],
+				'firstCatMonthData' => ! empty( $get_top_two_categories_monthly_data[0] ) ? $get_top_two_categories_monthly_data[0] : [],
+				'secondCatMonthData' => ! empty( $get_top_two_categories_monthly_data[1] ) ? $get_top_two_categories_monthly_data[1] : [],
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -1143,27 +968,6 @@ class AjaxApiController extends Controller
 		$combined_data = [ $final_data_1, $final_data_2 ];
 
 		return $combined_data;
-
-//		// Check the nonce and action
-//		if ( $this->verify_nonce() ) {
-//			// escaping all the values of the array
-//			$final_data_1 = array_map( 'esc_html', $final_data_1 );
-//			$final_data_2 = array_map( 'esc_html', $final_data_2 );
-//
-//			// Nonce is valid, proceed with your code
-//			wp_send_json( [
-//				// Response data here
-//				'msg' => __('hello','hexreport'),
-//				'type' => 'success',
-//				'firstCatMonthData' => $final_data_1,
-//				'secondCatMonthData' => $final_data_2,
-//			], 200);
-//		} else {
-//			// Nonce verification failed, handle the error
-//			wp_send_json( [
-//				'error' => 'Nonce verification failed',
-//			], 403); // 403 Forbidden status code
-//		}
 	}
 
 	/**
