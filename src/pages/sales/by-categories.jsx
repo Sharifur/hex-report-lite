@@ -28,32 +28,6 @@ export default function ByCategories(){
 			.get(ajaxUrl, {
 				params: {
 					nonce: nonce,
-					action: 'get_top_selling_product_and_categoreis',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				console.log(data)
-				if (data) {
-					setTopSellingCategoriesNames(data.topSellingCategoreisNames)
-					setTopSellingCategoriesCount(data.topSellingCategoreisCount)
-					setCategoriesSaleRatio(data.categoriesSalesRatio)
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-	}, []);
-
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
 					action: 'get_top_two_selling_categories_names',
 				},
 				headers: {
@@ -64,6 +38,9 @@ export default function ByCategories(){
 				if (data) {
 					setTopFirstSellingCategoryName(data.firstCatName)
 					setTopSecondSellingCategoryName(data.secondCatName)
+
+					setTopFirstCategoryMonthlySellData(data.firstCatMonthData)
+					setTopSecondCategoryMonthlySellData(data.secondCatMonthData)
 				}
 				// Handle the response data
 			})
@@ -77,7 +54,7 @@ export default function ByCategories(){
 			.get(ajaxUrl, {
 				params: {
 					nonce: nonce,
-					action: 'get_top_two_categories_monthly_data',
+					action: 'show_first_top_selling_product_monthly_data',
 				},
 				headers: {
 					'Content-Type': 'application/json',
@@ -85,8 +62,9 @@ export default function ByCategories(){
 			})
 			.then(({data}) => {
 				if (data) {
-					setTopFirstCategoryMonthlySellData(data.firstCatMonthData)
-					setTopSecondCategoryMonthlySellData(data.secondCatMonthData)
+					setTopSellingCategoriesNames(data.topSellingCategoreisNames)
+					setTopSellingCategoriesCount(data.topSellingCategoreisCount)
+					setCategoriesSaleRatio(data.categoriesSalesRatio)
 				}
 				// Handle the response data
 			})

@@ -8,8 +8,6 @@ export default function Sidebar(){
 
     const { toggleSidebar, isSidebarActive } = useSidebar();
 
-	const windowParams = window.location.search;
-
     return (
         <div className={`sidebarWrapper ${isSidebarActive ? 'active' : ''}`}>
             <div className="logoWrap">
@@ -20,13 +18,13 @@ export default function Sidebar(){
             </div>
             <ul>
                 <li>
-					<NavLink to={'/' + windowParams} exact activeClassName="active"><Gauge size={20}/><span className="menuText">{__("Dashboard","hexreport")} </span></NavLink>
+					<NavLink to={'/'} exact activeClassName="active"><Gauge size={20}/><span className="menuText">{__("Dashboard","hexreport")} </span></NavLink>
                 </li>
 				<li>
-					<NavLink to={"/sales/by-product" + windowParams} exact activeClassName="active"><ShoppingBasket size={20}/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></NavLink>
+					<NavLink to={"/sales/by-product"} exact activeClassName="active"><ShoppingBasket size={20}/><span className="menuText">{__( "Sales by Products", "hexreport" )}</span></NavLink>
 				</li>
 				<li>
-					<NavLink to={"/sales/by-categories" + windowParams} exact activeClassName="active"><LayoutGrid size={20}/><span className="menuText">{__("Sales by Categories","hexreport")}</span></NavLink>
+					<NavLink to={"/sales/by-categories"} exact activeClassName="active"><LayoutGrid size={20}/><span className="menuText">{__("Sales by Categories","hexreport")}</span></NavLink>
 				</li>
             </ul>
         </div>

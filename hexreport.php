@@ -21,6 +21,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) die();
 
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use HexReport\App\Core\Core;
 
 define( 'HEXREPORT_FILE', __FILE__ );
@@ -30,5 +31,16 @@ require_once __DIR__ . '/configs/bootstrap.php';
 if ( file_exists( HEXREPORT_DIR_PATH . '/vendor/autoload.php' ) ) {
 	require_once HEXREPORT_DIR_PATH . '/vendor/autoload.php';
 }
+
+/**
+ * Plugin compatibility declaration with WooCommerce HPOS - High Performance Order Storage
+ *
+ * @return void
+ */
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( FeaturesUtil::class ) ) {
+		FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 
 Core::getInstance();

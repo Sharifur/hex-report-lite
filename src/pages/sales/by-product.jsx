@@ -28,31 +28,6 @@ export default function ByProduct(){
 			.get(ajaxUrl, {
 				params: {
 					nonce: nonce,
-					action: 'get_top_selling_product_and_categoreis',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
-					setTopSellingProductsNames(data.topSellingProductsNames)
-					setTopSellingProductsCount(data.topSellingProductsCount)
-					setProductSaleRatio(data.productSaleRatio)
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-	}, []);
-
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
 					action: 'show_first_top_selling_product_monthly_data',
 				},
 				headers: {
@@ -62,51 +37,15 @@ export default function ByProduct(){
 			.then(({data}) => {
 				if (data) {
 					setTopFirstSellingProductMonthlyData(data.firstTopSellingProductMonthlyData)
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
 
-	}, []);
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'get_second_top_product_monthly_data',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
 					setTopSecondSellingProductMonthlyData(data.secondTopSellingProductMonthlyData)
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
 
-	}, []);
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'get_top_two_selling_product_name',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
 					setTopFirstSellingProductName(data.firstTopSellingProductName)
 					setTopSecondSellingProductName(data.secondTopSellingProductName)
+
+					setTopSellingProductsNames(data.topSellingProductsNames)
+					setTopSellingProductsCount(data.topSellingProductsCount)
+					setProductSaleRatio(data.productSaleRatio)
 				}
 				// Handle the response data
 			})

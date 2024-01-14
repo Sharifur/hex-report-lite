@@ -10,7 +10,7 @@ import React, {useEffect,useState} from 'react';
 import { __ } from "@wordpress/i18n";
 
 export default function Dashboard(){
-	const [totalSalesAmount, setTotalSalesAmount] = useState({
+	const [totalSalesAmount, setTotalSalesAmount] = useState( {
 		totalSales: 0,
 		totalCancelledAmount: 0,
 		totalOrdersAmount: 0,
@@ -19,22 +19,22 @@ export default function Dashboard(){
 		topSellingProductPrice: 0,
 		topSellingCatName: '',
 		topSellingCatPrice: 0,
-	});
 
-	const [totalOrdersRation, setTotalOrdersRation] = useState({
-		cancelledOrderRation: 0,
-		refundedOrderRation: 0,
-		failedOrderRation: 0,
-	});
+		totalSalesOfYear: [],
 
-	const [paymentMethodsRatio, setPaymentMethodsRatio] = useState({
-		bankTransferRation: 0,
-		checkPaymentRatio: 0,
-		cashOnDeliveryRatio: 0,
-	});
+		totalVisitorsCount: [],
 
-	const [totalSalesOfYear , setTotalSalesOfYear] = useState([]);
-	const [totalVisitorsCount , setTotalVisitorsCount] = useState([]);
+		cancelledOrderRation : 0,
+		refundedOrderRation : 0,
+		failedOrderRation : 0,
+
+		bankTransferRation : 0,
+		checkPaymentRatio : 0,
+		cashOnDeliveryRatio : 0,
+		localPickupRatio : 0,
+		flatRateRatio : 0,
+		freeShippingRatio : 0,
+	} );
 
 	const {nonce,ajaxUrl} = hexReportData;
 
@@ -60,60 +60,15 @@ export default function Dashboard(){
 						topSellingProductPrice : data.topSellingProductPrice,
 						topSellingCatName : data.topSellingCatName,
 						topSellingCatPrice : data.topSellingCatPrice,
-					})
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
 
-	}, []);
+						totalSalesOfYear: data.totalSalesOfYear,
 
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'total_order_ratio',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
-					setTotalOrdersRation({
+						totalVisitorsCount: data.totalVisitorsCount,
+
 						cancelledOrderRation : data.cancelledOrderRation,
 						refundedOrderRation : data.refundedOrderRation,
 						failedOrderRation : data.failedOrderRation,
-						localPickupRatio : data.localPickupRatio,
-						flatRateRatio : data.flatRateRatio,
-						freeShippingRatio : data.freeShippingRatio,
-					})
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
 
-	}, []);
-
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'count_payment_method_ratio',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
-					setPaymentMethodsRatio({
 						bankTransferRation : data.bankTransferRation,
 						checkPaymentRatio : data.checkPaymentRatio,
 						cashOnDeliveryRatio : data.cashOnDeliveryRatio,
@@ -130,57 +85,7 @@ export default function Dashboard(){
 
 	}, []);
 
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'total_sales_amount_for_year',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
-					setTotalSalesOfYear(data.totalSalesOfYear)
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-	}, []);
-
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'total_visitors_count_for_year',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
-					setTotalVisitorsCount(data.totalVisitorsCount)
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-	}, []);
-
-	const {totalSales,totalCancelledAmount,totalOrdersAmount,totalRefundedAmount,topSellingProductName,topSellingProductPrice,topSellingCatName,topSellingCatPrice} = totalSalesAmount;
-
-	const {cancelledOrderRation,refundedOrderRation,failedOrderRation} = totalOrdersRation;
-
-	const {bankTransferRation,checkPaymentRatio,cashOnDeliveryRatio,localPickupRatio,flatRateRatio,freeShippingRatio} = paymentMethodsRatio;
+	const {totalSales,totalCancelledAmount,totalOrdersAmount,totalRefundedAmount,topSellingProductName,topSellingProductPrice,topSellingCatName,topSellingCatPrice, totalSalesOfYear, totalVisitorsCount,cancelledOrderRation,refundedOrderRation,failedOrderRation,bankTransferRation,checkPaymentRatio,cashOnDeliveryRatio,localPickupRatio,flatRateRatio,freeShippingRatio  } = totalSalesAmount;
 
 	const translatedText =
 		{

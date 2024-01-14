@@ -10,14 +10,11 @@ export default function OrderCard({title}){
 
 	const [totalSalesAmount, setTotalSalesAmount] = useState({
 		totalOrdersAmount: 0,
-	});
 
-	const [totalSalesAmountPhases, setTotalSalesAmountPhases] = useState({
 		totalCompletedOredersFromJanToApr: 0,
 		totalCompletedOredersFromMayToAug: 0,
 		totalCompletedOredersFromSepToDec: 0,
 	});
-
 
 	useEffect(() => {
 		axios
@@ -34,6 +31,10 @@ export default function OrderCard({title}){
 				if (data) {
 					setTotalSalesAmount({
 						totalOrdersAmount : data.totalOrdersAmount,
+
+						totalCompletedOredersFromJanToApr: data.totalCompletedOredersFromJanToApr,
+						totalCompletedOredersFromMayToAug: data.totalCompletedOredersFromMayToAug,
+						totalCompletedOredersFromSepToDec: data.totalCompletedOredersFromSepToDec,
 					})
 				}
 				// Handle the response data
@@ -44,36 +45,7 @@ export default function OrderCard({title}){
 
 	}, []);
 
-	useEffect(() => {
-		axios
-			.get(ajaxUrl, {
-				params: {
-					nonce: nonce,
-					action: 'total_completed_order_in_three_phases',
-				},
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
-			.then(({data}) => {
-				if (data) {
-					setTotalSalesAmountPhases({
-						totalCompletedOredersFromJanToApr : data.totalCompletedOredersFromJanToApr,
-						totalCompletedOredersFromMayToAug : data.totalCompletedOredersFromMayToAug,
-						totalCompletedOredersFromSepToDec : data.totalCompletedOredersFromSepToDec,
-					})
-				}
-				// Handle the response data
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-	}, []);
-
-	const {totalOrdersAmount} = totalSalesAmount;
-
-	const {totalCompletedOredersFromJanToApr,totalCompletedOredersFromMayToAug,totalCompletedOredersFromSepToDec} = totalSalesAmountPhases;
+	const {totalOrdersAmount,totalCompletedOredersFromJanToApr,totalCompletedOredersFromMayToAug,totalCompletedOredersFromSepToDec } = totalSalesAmount;
 
 	let dailyAverageSale = totalOrdersAmount / 365;
 
