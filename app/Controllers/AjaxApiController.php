@@ -134,7 +134,7 @@ class AjaxApiController extends Controller
 				'type' => 'success',
 				'totalSales' => sprintf( __( '%s', 'hexreport' ), esc_html( $total_completed_sales ) ),
 				'totalCancelledAmount' => sprintf( __( '%s', 'hexreport' ), esc_html( $total_cancelled_sales ) ),
-				'totalOrdersAmount' => __( $total_orders, 'hexreport' ),
+				'totalOrdersAmount' => sprintf( esc_html__( '%s', 'hexreport' ), esc_html( $total_orders ) ),
 				'totalRefundedAmount' => sprintf( __( '%s', 'hexreport' ), esc_html( $total_refunded_sales ) ),
 				'topSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_selling_product_name ) ),
 				'topSellingProductPrice' => sprintf( __( '%s', 'hexreport' ), esc_html( $top_product_price ) ),
@@ -502,6 +502,13 @@ class AjaxApiController extends Controller
 
 		$get_top_selling_product_and_categoreis = $this->get_top_selling_product_and_categoreis();
 
+		$topSellingCategoreisNames = ! empty( $get_top_selling_product_and_categoreis[0] ) ? $get_top_selling_product_and_categoreis[0] : [];
+		$topSellingCategoreisCount = ! empty( $get_top_selling_product_and_categoreis[1] ) ? $get_top_selling_product_and_categoreis[1] : [];
+		$categoriesSalesRatio = ! empty( $get_top_selling_product_and_categoreis[2] ) ? $get_top_selling_product_and_categoreis[2] : [];
+		$topSellingProductsNames = ! empty( $get_top_selling_product_and_categoreis[3] ) ? $get_top_selling_product_and_categoreis[3] : [];
+		$topSellingProductsCount = ! empty( $get_top_selling_product_and_categoreis[4] ) ? $get_top_selling_product_and_categoreis[4] : [];
+		$productSaleRatio = ! empty( $get_top_selling_product_and_categoreis[5] ) ? $get_top_selling_product_and_categoreis[5] : [];
+
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
 			// Nonce is valid, proceed with your code
@@ -516,12 +523,12 @@ class AjaxApiController extends Controller
 				'firstTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( ! empty( $get_top_two_selling_product_name[0] ) ? $get_top_two_selling_product_name[0] : '' ) ),
 				'secondTopSellingProductName' => sprintf( __( '%s', 'hexreport' ), esc_html( ! empty( $get_top_two_selling_product_name[1] ) ? $get_top_two_selling_product_name[1] : '' ) ),
 
-				'topSellingCategoreisNames' => ! empty( $get_top_selling_product_and_categoreis[0] ) ? $get_top_selling_product_and_categoreis[0] : '',
-				'topSellingCategoreisCount' => ! empty( $get_top_selling_product_and_categoreis[1] ) ? $get_top_selling_product_and_categoreis[1] : '',
-				'categoriesSalesRatio' => ! empty( $get_top_selling_product_and_categoreis[2] ) ? $get_top_selling_product_and_categoreis[2] : '',
-				'topSellingProductsNames' => ! empty( $get_top_selling_product_and_categoreis[3] ) ? $get_top_selling_product_and_categoreis[3] : '',
-				'topSellingProductsCount' => ! empty( $get_top_selling_product_and_categoreis[4] ) ? $get_top_selling_product_and_categoreis[4] : '',
-				'productSaleRatio' => ! empty( $get_top_selling_product_and_categoreis[5] ) ? $get_top_selling_product_and_categoreis[5] : '',
+				'topSellingCategoreisNames' => array_map( 'esc_html', $topSellingCategoreisNames ),
+				'topSellingCategoreisCount' => array_map( 'esc_html', $topSellingCategoreisCount ),
+				'categoriesSalesRatio' => array_map( 'esc_html', $categoriesSalesRatio ),
+				'topSellingProductsNames' => array_map( 'esc_html', $topSellingProductsNames ),
+				'topSellingProductsCount' => array_map( 'esc_html', $topSellingProductsCount ),
+				'productSaleRatio' => array_map( 'esc_html', $productSaleRatio ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -692,9 +699,7 @@ class AjaxApiController extends Controller
 	public function get_top_selling_product_and_categoreis()
 	{
 		// Initialize arrays to store category names and sales count
-		$product_names = [];
 		$product_sales = [];
-		$category_names = [];
 		$category_sales = [];
 		$total_order_count = 0; // Initialize the order count
 
@@ -768,13 +773,6 @@ class AjaxApiController extends Controller
 			$category_sales_ratio[] = $single_item / $total_order_count * 100;
 		}
 
-//		$category_names = array_map( 'esc_html', $category_names );
-//		$category_sales = array_map( 'esc_html', $category_sales );
-//		$category_sales_ratio = array_map( 'esc_html', $category_sales_ratio );
-//		$product_names = array_map( 'esc_html', $product_names );
-//		$product_sales = array_map( 'esc_html', $product_sales );
-//		$product_sale_ratio = array_map( 'esc_html', $product_sale_ratio );
-
 		$combined_value = [ $category_names, $category_sales, $category_sales_ratio, $product_names, $product_sales, $product_sale_ratio ];
 
 		return $combined_value;
@@ -841,6 +839,10 @@ class AjaxApiController extends Controller
 
 		$get_top_two_categories_monthly_data = $this->get_top_two_categories_monthly_data();
 
+		$firstCatMonthData = ! empty( $get_top_two_categories_monthly_data[0] ) ? $get_top_two_categories_monthly_data[0] : [];
+
+		$secondCatMonthData = ! empty( $get_top_two_categories_monthly_data[1] ) ? $get_top_two_categories_monthly_data[1] : [];
+
 		// Check the nonce and action
 		if ( $this->verify_nonce() ) {
 			// Nonce is valid, proceed with your code
@@ -851,8 +853,8 @@ class AjaxApiController extends Controller
 				'firstCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $firstCatName ) ),
 				'secondCatName' => sprintf( __( '%s', 'hexreport' ), esc_html( $secondCatName ) ),
 
-				'firstCatMonthData' => ! empty( $get_top_two_categories_monthly_data[0] ) ? $get_top_two_categories_monthly_data[0] : [],
-				'secondCatMonthData' => ! empty( $get_top_two_categories_monthly_data[1] ) ? $get_top_two_categories_monthly_data[1] : [],
+				'firstCatMonthData' => array_map( 'esc_html', $firstCatMonthData ),
+				'secondCatMonthData' => array_map( 'esc_html', $secondCatMonthData ),
 			], 200);
 		} else {
 			// Nonce verification failed, handle the error
@@ -960,10 +962,6 @@ class AjaxApiController extends Controller
 				$final_data_2[] = $sinlge_value;
 			}
 		}
-
-		// escaping all the values of the array
-		$final_data_1 = array_map( 'esc_html', $final_data_1 );
-		$final_data_2 = array_map( 'esc_html', $final_data_2 );
 
 		$combined_data = [ $final_data_1, $final_data_2 ];
 

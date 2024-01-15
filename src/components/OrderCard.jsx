@@ -58,7 +58,7 @@ export default function OrderCard({title}){
 	}
 
     const cardListItems = [
-        {title: translatedText.totalOrders,amount: "$"+totalOrdersAmount.toFixed(2)},
+        {title: translatedText.totalOrders,amount: "$"+Number(totalOrdersAmount).toFixed(2)},
         {title: translatedText.dailyAverage,amount: "$"+dailyAverageSale.toFixed(2)},
         {title: translatedText.janToApr,amount: "$"+Number(totalCompletedOredersFromJanToApr).toFixed(2)},
         {title: translatedText.mayToAug,amount: "$"+Number(totalCompletedOredersFromMayToAug).toFixed(2)},

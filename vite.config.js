@@ -1,8 +1,18 @@
 import { defineConfig } from "vite";
 import react from '@vitejs/plugin-react';
 
+const currentFilePath = new URL(import.meta.url).pathname;
+
+const regex = /[^\/\/]+(?=\/wp-content\/plugins\/hexreport)/;
+const match = currentFilePath.match(regex);
+var everythingBefore = '';
+if (match) {
+	everythingBefore = match[0];
+}
+const basepath = `/${everythingBefore}/wp-content/plugins/hexreport/dist/`;
+
 export default defineConfig({
-	base: '/hexreport/wp-content/plugins/hexreport/dist/',
+	base: basepath,
 	build: {
 		rollupOptions: {
 			output: {

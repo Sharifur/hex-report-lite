@@ -1,10 +1,9 @@
 === HexReport ===
 Contributors: wphex
-Donate link: https://example.com/
 Tags: HexReport, Sales Reports, WooCommerce Reports, Store Report, Sales Report for WooCommerce, Business Report
 Requires PHP: 7.1
 Requires at least: 5.4
-Tested up to: 6.3
+Tested up to: 6.4.2
 Version: 1.0.0
 Stable tag: 1.0.0
 License: GPLv2 or later
