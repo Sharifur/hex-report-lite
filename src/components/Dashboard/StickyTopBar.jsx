@@ -1,6 +1,6 @@
 import "./../../assets/scss/sections/topbar.scss";
 import {useState,useEffect,useRef} from "react";
-import menuIcon from "../../assets/icons/Menu.svg"
+import menuIcon from "../../img/Menu.svg"
 import {useSidebar} from "../../context/SidebarContext.jsx";
 
 export default function StickyTopBar(){

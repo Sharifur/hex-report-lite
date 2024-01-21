@@ -11,7 +11,7 @@
  * Tested up to: 6.4.2
  * Requires PHP: 7.1
  * WC requires at least: 6.0
- * WC tested up to: 8.4.0
+ * WC tested up to: 8.5.1
  * Author URI: https://wphex.com/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
