@@ -10,7 +10,6 @@ if (match) {
 	everythingBefore = match[0];
 }
 const basepath = `/${everythingBefore}/wp-content/plugins/hexreport/dist/`;
-
 export default defineConfig({
 	base: basepath,
 	build: {
