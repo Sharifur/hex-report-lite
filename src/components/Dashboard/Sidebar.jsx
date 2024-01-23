@@ -1,5 +1,5 @@
 import "./../../assets/scss/sections/sidebar.scss";
-import  logoIcon  from "../../img/logoIcon.svg";
+import  logoIcon  from "../../img/logoIcon.png";
 import {NavLink} from "react-router-dom";
 import {useSidebar} from "../../context/SidebarContext.jsx";
 import { __ } from "@wordpress/i18n";
